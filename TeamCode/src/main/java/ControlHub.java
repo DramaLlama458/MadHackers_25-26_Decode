@@ -1,4 +1,5 @@
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class ControlHub {
@@ -12,5 +13,8 @@ public class ControlHub {
         rightFront = map.get(DcMotor.class,"rightFront");
         leftBack = map.get(DcMotor.class,"leftBack");
         rightBack = map.get(DcMotor.class,"rightBack");
+
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 }
