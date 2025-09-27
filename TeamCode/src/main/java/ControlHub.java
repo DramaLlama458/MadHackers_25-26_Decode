@@ -1,3 +1,4 @@
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,6 +18,7 @@ public class ControlHub {
     */
 
     public void init(HardwareMap map){
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
         leftFront = map.get(DcMotor.class,"leftFront");
         rightFront = map.get(DcMotor.class,"rightFront");
