@@ -2,14 +2,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class Drive_Train_Test extends LinearOpMode {
+public class DriveTrainTest extends LinearOpMode {
     ControlHub hub;
     @Override
     public void runOpMode() throws InterruptedException {
         hub = new ControlHub();
         hub.init(hardwareMap);
 
+
         waitForStart();
+
 
         if (isStopRequested()) return;
 
@@ -31,6 +33,7 @@ public class Drive_Train_Test extends LinearOpMode {
             hub.rightFront.setPower(rightFrontPower);
             hub.leftBack.setPower(leftBackPower);
             hub.rightBack.setPower(rightBackPower);
+
             /*
             if(gamepad1.x){
                 hub.inputServo.setPower(1);
