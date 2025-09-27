@@ -1,3 +1,4 @@
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,13 +9,29 @@ public class ControlHub {
     public DcMotor leftBack;
     public DcMotor rightBack;
 
+    /*
+    public DcMotor conveyorMotor;
+    public DcMotor outputMotor;
+    public CRServo inputServo;
+    public double conveyorSpeed = 0;
+    */
+
     public void init(HardwareMap map){
+
         leftFront = map.get(DcMotor.class,"leftFront");
         rightFront = map.get(DcMotor.class,"rightFront");
         leftBack = map.get(DcMotor.class,"leftBack");
         rightBack = map.get(DcMotor.class,"rightBack");
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /*
+        conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
+        outputMotor = map.get(DcMotor.class,"outputMotor");
+        inputServo = map.get(CRServo.class,"inputServo");
+        */
+
+
     }
 }

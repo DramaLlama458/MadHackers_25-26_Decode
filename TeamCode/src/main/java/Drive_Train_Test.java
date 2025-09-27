@@ -10,7 +10,7 @@ public class Drive_Train_Test extends LinearOpMode {
         hub.init(hardwareMap);
 
         waitForStart();
-//test
+
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
@@ -31,6 +31,27 @@ public class Drive_Train_Test extends LinearOpMode {
             hub.rightFront.setPower(rightFrontPower);
             hub.leftBack.setPower(leftBackPower);
             hub.rightBack.setPower(rightBackPower);
+            /*
+            if(gamepad1.x){
+                hub.inputServo.setPower(1);
+            }else{
+                hub.inputServo.setPower(0);
+            }
+
+
+
+            if(gamepad1.right_bumper){
+                hub.conveyorSpeed+=.05;
+            }
+            if(gamepad1.left_bumper){
+                hub.conveyorSpeed-=.05;
+            }
+            if(gamepad1.b){
+                hub.conveyorSpeed=0;
+            }
+
+            hub.conveyorMotor.setPower(hub.conveyorSpeed);
+            */
         }
     }
 }
