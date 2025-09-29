@@ -35,10 +35,14 @@ public class DriveTrainTest extends LinearOpMode {
             hub.rightBack.setPower(rightBackPower);
 
             /*
-            if(gamepad1.x){
+            if(gamepad1.x && !hub.inputOn){
                 hub.inputServo.setPower(1);
+                hub.inputOn=true;
             }else{
                 hub.inputServo.setPower(0);
+            }
+            if(gamepad1.xWasReleased()){
+                hub.inputOn=false;
             }
 
 
@@ -56,7 +60,11 @@ public class DriveTrainTest extends LinearOpMode {
             hub.conveyorMotor.setPower(hub.conveyorSpeed);
 
 
+
             */
+
+
+
         }
     }
 }
