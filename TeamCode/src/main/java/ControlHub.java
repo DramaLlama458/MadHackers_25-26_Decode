@@ -16,7 +16,10 @@ public class ControlHub {
     public DcMotor outputMotor;
     public CRServo inputServo;
     public double conveyorSpeed = 0;
+
+    public boolean inputOn = false;
     */
+
 
     public void init(HardwareMap map){
         FtcDashboard dashboard = FtcDashboard.getInstance();
