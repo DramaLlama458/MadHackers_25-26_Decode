@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-// lgkfjlkgfjgflgjfflgjflgdfjgflgjffjgflkgjflk4234gf
+// lgkfjlkgfjgflgjfflgjflgdfjgfldgjffjgflkgjflk4234gf
 public class ControlHub {
     public DcMotor leftFront;
     public DcMotor rightFront;
