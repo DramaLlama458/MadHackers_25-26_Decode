@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
-// lgkfjlkgfjgflgjfflgjflgdfjgfldgjffjgflkgjflk4234gf
+
 public class ControlHub {
     MecanumDrive drive;
     public IMU imu;
@@ -34,7 +34,6 @@ public class ControlHub {
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
 
         //This is the code setup for the future motors and servos on the robot
