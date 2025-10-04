@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +13,7 @@ import java.util.*;
 
 
 public class Gamepad {
+
     public static Map<String, Consumer<Object>> input = new HashMap<>();
 
     // Init code stuff
@@ -145,7 +148,7 @@ public class Gamepad {
 
     public static void HandleInput()
     {
-        Gamepad gamepad = GetGamePad1();
+        Gamepad gamepad = gamepad1;
         Class<?> _class = gamepad.getClass();
         Consumer<Object> func;
         String key;

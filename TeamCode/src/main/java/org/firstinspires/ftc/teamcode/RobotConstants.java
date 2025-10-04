@@ -1,6 +1,7 @@
+package org.firstinspires.ftc.teamcode;
+
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+
 @Config
 public class RobotConstants {
 
