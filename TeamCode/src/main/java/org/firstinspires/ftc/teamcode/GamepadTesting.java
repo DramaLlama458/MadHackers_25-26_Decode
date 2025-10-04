@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -9,13 +12,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.*;
 
 
-public class Gamepad {
+public class GamepadTesting {
 
     public static Map<String, Consumer<Object>> input = new HashMap<>();
 
@@ -151,7 +155,8 @@ public class Gamepad {
 
     public static void HandleInput()
     {
-        Gamepad gamepad = gamepad1;
+        Gamepad gamepad = new Gamepad();
+        gamepad.copy(gamepad1);
         Class<?> _class = gamepad.getClass();
         Consumer<Object> func;
         String key;
