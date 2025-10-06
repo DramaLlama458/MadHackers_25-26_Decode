@@ -1,30 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.*;
 
-@TeleOp
-public class GamepadTesting{
+public class Gamepad
+{
 
     public static Map<String, Consumer<Object>> input = new HashMap<>();
+    public boolean already_init = false;
 
     // Init code stuff
-    static 
+    public void __init()
     {
+        if(already_init)
+        {   return;
+        }
         // Axis (Float)
         input.put("left_stick_x", o -> Axis0((Float) o));
         input.put("left_stick_y", o -> Axis1((Float) o));
@@ -50,112 +41,102 @@ public class GamepadTesting{
         input.put("dpad_right", o -> DpadRight((Boolean) o));
     }
 
-    
-    public static Gamepad GetGamePad1()
-    {   return gamepad1;
-    }
-
-    public static Gamepad GetGamePad2()
-    {   return gamepad2;
-    }
-
     // Left Joystick X
-    public static void Axis0(float xAxis)
+    public void Axis0(float xAxis)
     {
     }
     // Left Joystick Y (inv)
-    public static void Axis1(float yAxis)
+    public void Axis1(float yAxis)
     {
     }
     // Right Joystick X
-    public static void Axis2(float xAxis)
+    public void Axis2(float xAxis)
     {
     }
     // Right Joystick Y (inv)
-    public static void Axis3(float yAxis)
+    public void Axis3(float yAxis)
     {
     }
 
     //  X
-    public static void Button0(boolean pressed)
+    public void Button0(boolean pressed)
     {
     }
 
     // A
-    public static void Button1(boolean pressed)
+    public void Button1(boolean pressed)
     {
     }
 
     // []/B (Square)
-    public static void Button2(boolean pressed)
+    public void Button2(boolean pressed)
     {
     }
 
     // Y
-    public static void Button3(boolean pressed)
+    public void Button3(boolean pressed)
     {
     }
 
     // Left Bumper
-    public static void Button4(boolean pressed)
+    public void Button4(boolean pressed)
     {
     }
 
     // Right Bumper
-    public static void Button5(boolean pressed)
+    public void Button5(boolean pressed)
     {
     }
 
     // Left Trigger
-    public static void Button6(boolean pressed)
+    public void Button6(boolean pressed)
     {
     }
 
     // Right Trigger
-    public static void Button7(boolean pressed)
+    public void Button7(boolean pressed)
     {
     }
 
     // Back
-    public static void Button8(boolean pressed)
+    public void Button8(boolean pressed)
     {
     }
 
     // Start
-    public static void Button9(boolean pressed)
+    public void Button9(boolean pressed)
     {
     }
 
     // Left Joystick
-    public static void Button10(boolean pressed)
+    public void Button10(boolean pressed)
     {
     }
 
     // Right Joystick
-    public static void Button11(boolean pressed)
+    public void Button11(boolean pressed)
     {
     }
 
-    public static void DpadUp(boolean pressed)
+    public void DpadUp(boolean pressed)
     {
     }
 
-    public static void DpadDown(boolean pressed)
+    public void DpadDown(boolean pressed)
     {
     }
 
-    public static void DpadLeft(boolean pressed)
+    public void DpadLeft(boolean pressed)
     {
     }
 
-    public static void DpadRight(boolean pressed)
+    public void DpadRight(boolean pressed)
     {
     }
 
-    public static void HandleInput()
+    public void HandleInput(com.qualcomm.robotcore.hardware.Gamepad gamepad)
     {
-        Gamepad gamepad = new Gamepad();
-        //gamepad.copy();
+        __init();
         Class<?> _class = gamepad.getClass();
         Consumer<Object> func;
         String key;
