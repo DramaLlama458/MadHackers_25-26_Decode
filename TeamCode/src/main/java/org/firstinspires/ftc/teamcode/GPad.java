@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.*;
 
-public class Gamepad
+public class GPad
 {
 
-    public static Map<String, Consumer<Object>> input = new HashMap<>();
+    public static Map<String, Consumer<Boolean>> input = new HashMap<>();
     public boolean already_init = false;
     private Gamepad gamepad;
     private ControlHub hub;
@@ -21,29 +22,28 @@ public class Gamepad
 
 
         // Buttons (Boolean)
-        input.put("x", o -> Button0((Boolean) o));
-        input.put("a", o -> Button1((Boolean) o));
-        input.put("b", o -> Button2((Boolean) o));
-        input.put("y", o -> Button3((Boolean) o));
-        input.put("left_bumper", o -> Button4((Boolean) o));
-        input.put("right_bumper", o -> Button5((Boolean) o));
-        input.put("left_trigger", o -> Button6((Boolean) o));
-        input.put("right_trigger", o -> Button7((Boolean) o));
-        input.put("back", o -> Button8((Boolean) o));
-        input.put("start", o -> Button9((Boolean) o));
-        input.put("left_stick_button", o -> Button10((Boolean) o));
-        input.put("right_stick_button", o -> Button11((Boolean) o));
-        input.put("dpad_up", o -> DpadUp((Boolean) o));
-        input.put("dpad_down", o -> DpadDown((Boolean) o));
-        input.put("dpad_left", o -> DpadLeft((Boolean) o));
-        input.put("dpad_right", o -> DpadRight((Boolean) o));
+        input.put("x", this::ButtonX);
+        input.put("a", this::ButtonA);
+        input.put("b", this::ButtonB);
+        input.put("y", this::ButtonY);
+        input.put("left_bumper", this::ButtonLeftBumper);
+        input.put("right_bumper", this::ButtonRightBumper);
+        input.put("left_trigger", this::ButtonLeftTrigger);
+        input.put("right_trigger", this::ButtonRightTrigger);
+        input.put("back", this::ButtonBack);
+        input.put("start", this::ButtonStart);
+        input.put("left_stick_this::Button", this::ButtonLeftJoystick);
+        input.put("right_stick_this::Button", this::ButtonRightJoystick);
+        input.put("dpad_up", this::DpadUp);
+        input.put("dpad_down", this::DpadDown);
+        input.put("dpad_left", this::DpadLeft);
+        input.put("dpad_right", this::DpadRight);
 
         gamepad = gmp;
         hub = hb;
 
-
         // Init Controller stuff.
-        gamepad.setJoystickDeadzone(.08);
+        //gamepad.setJoystickDeadzone(.08);
     }
 
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
@@ -135,12 +135,12 @@ public class Gamepad
     {
         __init(hb, gmp);
         Class<?> _class = gamepad.getClass();
-        Consumer<Object> func;
+        Consumer<Boolean> func;
         String key;
         Field field;
-        Object value;
+        Boolean value;
 
-        for (Map.Entry<String, Consumer<Object>> i : input.entrySet())
+        for (Map.Entry<String, Consumer<Boolean>> i : input.entrySet())
         {
             try
             {
@@ -148,7 +148,7 @@ public class Gamepad
                 func = i.getValue();
 
                 field = _class.getDeclaredField(key);
-                value = field.get(gamepad);
+                value = (Boolean)field.get(gamepad);
 
                 func.accept(value);
             }
