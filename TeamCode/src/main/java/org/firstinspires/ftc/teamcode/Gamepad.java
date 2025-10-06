@@ -9,18 +9,16 @@ public class Gamepad
 
     public static Map<String, Consumer<Object>> input = new HashMap<>();
     public boolean already_init = false;
+    private Gamepad gamepad;
+    private ControlHub hub;
 
     // Init code stuff
-    public void __init()
+    public void __init(ControlHub hb, Gamepad gmp)
     {
         if(already_init)
         {   return;
         }
-        // Axis (Float)
-        input.put("left_stick_x", o -> Axis0((Float) o));
-        input.put("left_stick_y", o -> Axis1((Float) o));
-        input.put("right_stick_x", o -> Axis2((Float) o));
-        input.put("right_stick_y", o -> Axis3((Float) o));
+
 
         // Buttons (Boolean)
         input.put("x", o -> Button0((Boolean) o));
@@ -39,82 +37,81 @@ public class Gamepad
         input.put("dpad_down", o -> DpadDown((Boolean) o));
         input.put("dpad_left", o -> DpadLeft((Boolean) o));
         input.put("dpad_right", o -> DpadRight((Boolean) o));
+
+        gamepad = gmp;
+        hub = hb;
+
+
+        // Init Controller stuff.
+        gamepad.setJoystickDeadzone(.08);
     }
 
-    // Left Joystick X
-    public void Axis0(float xAxis)
+    public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
     {
-    }
-    // Left Joystick Y (inv)
-    public void Axis1(float yAxis)
-    {
-    }
-    // Right Joystick X
-    public void Axis2(float xAxis)
-    {
-    }
-    // Right Joystick Y (inv)
-    public void Axis3(float yAxis)
-    {
+        double y = -l_yAxis; // Remember, Y stick value is reversed
+        double x = l_xAxis* 1.1; // Counteract imperfect strafing
+        double rx = r_xAxis;
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double leftFrontPower = (y + x + rx) / denominator;
+        double leftBackPower = (y - x + rx) / denominator;
+        double rightFrontPower = (y - x - rx) / denominator;
+        double rightBackPower = (y + x - rx) / denominator;
+
+        hub.leftFront.setPower(leftFrontPower);
+        hub.rightFront.setPower(rightFrontPower);
+        hub.leftBack.setPower(leftBackPower);
+        hub.rightBack.setPower(rightBackPower);
     }
 
-    //  X
-    public void Button0(boolean pressed)
-    {
-    }
-
-    // A
-    public void Button1(boolean pressed)
-    {
-    }
-
-    // []/B (Square)
-    public void Button2(boolean pressed)
-    {
-    }
-
-    // Y
-    public void Button3(boolean pressed)
+    public void ButtonX(boolean pressed)
     {
     }
 
-    // Left Bumper
-    public void Button4(boolean pressed)
+    public void ButtonA(boolean pressed)
     {
     }
 
-    // Right Bumper
-    public void Button5(boolean pressed)
+    public void ButtonB(boolean pressed)
     {
     }
 
-    // Left Trigger
-    public void Button6(boolean pressed)
+    public void ButtonY(boolean pressed)
     {
     }
 
-    // Right Trigger
-    public void Button7(boolean pressed)
+    public void ButtonLeftBumper(boolean pressed)
     {
     }
 
-    // Back
-    public void Button8(boolean pressed)
+    public void ButtonRightBumper(boolean pressed)
     {
     }
 
-    // Start
-    public void Button9(boolean pressed)
+    public void ButtonLeftTrigger(boolean pressed)
     {
     }
 
-    // Left Joystick
-    public void Button10(boolean pressed)
+    public void ButtonRightTrigger(boolean pressed)
     {
     }
 
-    // Right Joystick
-    public void Button11(boolean pressed)
+    public void ButtonBack(boolean pressed)
+    {
+    }
+
+    public void ButtonStart(boolean pressed)
+    {
+    }
+
+    public void ButtonLeftJoystick(boolean pressed)
+    {
+    }
+
+    public void ButtonRightJoystick(boolean pressed)
     {
     }
 
@@ -134,9 +131,9 @@ public class Gamepad
     {
     }
 
-    public void HandleInput(Gamepad gamepad)
+    public void HandleInput(ControlHub hb, Gamepad gmp)
     {
-        __init();
+        __init(hb, gmp);
         Class<?> _class = gamepad.getClass();
         Consumer<Object> func;
         String key;
@@ -156,17 +153,10 @@ public class Gamepad
                 func.accept(value);
             }
             catch (Exception e)
-            {   
-                // If its not there??? Then we dont need to do anything.
+            {   // If its not there??? Then we dont need to do anything.
             }
         }
+
+        Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
     }
 }
-
-
-
-
-
-
-
-
