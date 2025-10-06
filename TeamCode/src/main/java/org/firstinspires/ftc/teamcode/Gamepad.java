@@ -134,7 +134,7 @@ public class Gamepad
     {
     }
 
-    public void HandleInput(com.qualcomm.robotcore.hardware.Gamepad gamepad)
+    public void HandleInput(Gamepad gamepad)
     {
         __init();
         Class<?> _class = gamepad.getClass();
