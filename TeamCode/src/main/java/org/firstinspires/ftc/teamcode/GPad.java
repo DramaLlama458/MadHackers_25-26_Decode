@@ -7,21 +7,13 @@ import java.util.*;
 
 public class GPad
 {
+    Map<String, Consumer<Boolean>> input = new HashMap<>();
+    Gamepad gamepad;
+    ControlHubTest hub;
 
-    public static Map<String, Consumer<Boolean>> input = new HashMap<>();
-    public boolean already_init = false;
-    private Gamepad gamepad;
-    private ControlHub hub;
-
-    // Init code stuff
-    public void __init(ControlHub hb, Gamepad gmp)
+    public GPad(ControlHubTest hb, Gamepad gmp)
     {
-        if(already_init)
-        {   return;
-        }
-
-
-        // Buttons (Boolean)
+    // Buttons (Boolean)
         input.put("x", this::ButtonX);
         input.put("a", this::ButtonA);
         input.put("b", this::ButtonB);
@@ -41,9 +33,6 @@ public class GPad
 
         gamepad = gmp;
         hub = hb;
-
-        // Init Controller stuff.
-        //gamepad.setJoystickDeadzone(.08);
     }
 
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
@@ -131,9 +120,8 @@ public class GPad
     {
     }
 
-    public void HandleInput(ControlHub hb, Gamepad gmp)
+    public void HandleInput()
     {
-        __init(hb, gmp);
         Class<?> _class = gamepad.getClass();
         Consumer<Boolean> func;
         String key;
@@ -153,7 +141,7 @@ public class GPad
                 func.accept(value);
             }
             catch (Exception e)
-            {   // If its not there??? Then we dont need to do anything.
+            {   // If its not there??? Then we don't need to do anything.
             }
         }
 
