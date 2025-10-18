@@ -35,11 +35,21 @@ public class GPad
         hub = hb;
     }
 
+    private double scaleInput(double i)
+    {
+        double sign = Math.signum(i);
+        i = Math.abs(i);
+
+        double scaled = Math.log10(9 * i + 1);
+        return sign * scaled;
+    }
+
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
     {
-        double y = -l_yAxis; // Remember, Y stick value is reversed
-        double x = l_xAxis* 1.1; // Counteract imperfect strafing
-        double rx = r_xAxis;
+
+        double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
+        double x = scaleInput(l_xAxis * 1.1); // Counteract imperfect strafing
+        double rx = scaleInput(r_xAxis);
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
