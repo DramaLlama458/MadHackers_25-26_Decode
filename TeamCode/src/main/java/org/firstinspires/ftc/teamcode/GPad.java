@@ -40,7 +40,10 @@ public class GPad
         double sign = Math.signum(i);
         i = Math.abs(i);
 
-        double scaled = Math.log10(9 * i + 1);
+        // Exponential-like curve: output = 1 - (1 - input)^exponent
+        double exponent = 2.5; // tweak for compression
+        double scaled = 1 - Math.pow(1 - i, exponent);
+
         return sign * scaled;
     }
 
@@ -60,10 +63,10 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.leftFront.setPower(leftFrontPower);
-        hub.rightFront.setPower(rightFrontPower);
-        hub.leftBack.setPower(leftBackPower);
-        hub.rightBack.setPower(rightBackPower);
+        hub.leftFront.setPower(leftFrontPower * .85);
+        hub.rightFront.setPower(rightFrontPower * .85);
+        hub.leftBack.setPower(leftBackPower * .85);
+        hub.rightBack.setPower(rightBackPower * .85);
     }
 
     public void ButtonX(boolean pressed)
