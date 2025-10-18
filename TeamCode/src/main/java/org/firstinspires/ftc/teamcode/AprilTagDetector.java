@@ -35,6 +35,11 @@ public class AprilTagDetector {
     ReentrantLock mutex = new ReentrantLock();
     //Condition cond = mutex.newCondition();
 
+    public enum Color
+    {
+        Green,
+        Purple
+    }
 
     public AprilTagDetector(Vision _v) {
         vision = _v;
@@ -104,5 +109,28 @@ public class AprilTagDetector {
         }
 
         return motif;
+    }
+
+    public Color[] GetColorOrder()
+    {
+        AprilTagDetection m = GetMotif();
+
+        if (m == null)
+        {   return null;
+        }
+
+        switch(m.id)
+        {
+            case 21:
+                return new Color[]{Color.Green, Color.Purple, Color.Purple};
+            case 22:
+                return new Color[]{Color.Purple, Color.Green, Color.Purple};
+            case 23:
+                return new Color[]{Color.Purple, Color.Purple, Color.Green};
+            default:
+                break;
+        }
+
+        throw new RuntimeException(String.format("Failed to get AprilTag Code: [%d]", m.id));
     }
 }
