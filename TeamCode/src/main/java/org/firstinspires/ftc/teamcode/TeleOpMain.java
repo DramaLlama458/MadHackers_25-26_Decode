@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/*
+
 @TeleOp
 public class TeleOpMain extends LinearOpMode  {
     ControlHubTest hub;
@@ -40,4 +40,3 @@ public class TeleOpMain extends LinearOpMode  {
         }
     }
 }
-*/
