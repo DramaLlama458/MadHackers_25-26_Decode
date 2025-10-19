@@ -41,7 +41,7 @@ public class GPad
         i = Math.abs(i);
 
         // Exponential-like curve: output = 1 - (1 - input)^exponent
-        double exponent = 2.5; // tweak for compression
+        double exponent = 1.5; // tweak for compression
         double scaled = 1 - Math.pow(1 - i, exponent);
 
         return sign * scaled;
