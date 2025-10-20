@@ -55,10 +55,12 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.leftFront.setPower(leftFrontPower);
-        hub.rightFront.setPower(rightFrontPower);
-        hub.leftBack.setPower(leftBackPower);
-        hub.rightBack.setPower(rightBackPower);
+        double wheelPowerMultiplier = 0.5;
+
+        hub.leftFront.setPower(leftFrontPower*wheelPowerMultiplier);
+        hub.rightFront.setPower(rightFrontPower*wheelPowerMultiplier);
+        hub.leftBack.setPower(leftBackPower*wheelPowerMultiplier);
+        hub.rightBack.setPower(rightBackPower*wheelPowerMultiplier);
     }
 
     public void ButtonX(boolean pressed)
