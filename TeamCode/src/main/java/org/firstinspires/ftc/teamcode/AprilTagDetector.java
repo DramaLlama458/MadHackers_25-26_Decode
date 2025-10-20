@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class AprilTagDetector {
+public class AprilTagDetector
+{
     AprilTagProcessor tagProcessor;
     Vision vision;
     // There is 3 in this years competition.
@@ -67,9 +68,9 @@ public class AprilTagDetector {
             while (vision.GetPortal().getCameraState() == STREAMING)
             {
                 ArrayList<AprilTagDetection> tags;
-                int blueTag = 20;
-                int[] motifTags = { 21, 22, 23 };
-                int redTag = 24;
+                final int blueTag = 20;
+                final int[] motifTags = { 21, 22, 23 };
+                final int redTag = 24;
 
                 tags = tagProcessor.getDetections();
 
@@ -82,6 +83,31 @@ public class AprilTagDetector {
                     {   continue;
                     }
 
+                    this.mutex.lock();
+
+                    switch(tag.id)
+                    {
+                        case blueTag:
+                            this.blue = tag;
+                            break;
+                        case redTag:
+                            this.red = tag;
+                            break;
+                    }
+
+                    if(this.motif == null)
+                    {
+                        for(int tagNum : motifTags)
+                        {
+                            if (tag.id == tagNum)
+                            {
+                                this.motif = tag;
+                                break;
+                            }
+                        }
+                    }
+
+                    this.mutex.unlock();
                 }
                 long  milliseconds = Math.round(1000f / vision.GetPortal().getFps());
 
@@ -93,7 +119,6 @@ public class AprilTagDetector {
             }
         }
     }
-
 
     public AprilTagDetection GetMotif()
     {
