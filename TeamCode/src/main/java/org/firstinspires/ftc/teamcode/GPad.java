@@ -35,23 +35,15 @@ public class GPad
         hub = hb;
     }
 
-    private double scaleInput(double i)
-    {
-        double sign = Math.signum(i);
-        i = Math.abs(i);
-
-        // Exponential-like curve: output = 1 - (1 - input)^exponent
-        double exponent = 1.5; // tweak for compression
-        double scaled = 1 - Math.pow(1 - i, exponent);
-
-        return sign * scaled;
+    public double scaleInput(double input) 
+    {   return input * input * input;
     }
-
+    
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
     {
 
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
-        double x = scaleInput(l_xAxis * 1.1); // Counteract imperfect strafing
+        double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis);
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -63,10 +55,10 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.leftFront.setPower(leftFrontPower * .85);
-        hub.rightFront.setPower(rightFrontPower * .85);
-        hub.leftBack.setPower(leftBackPower * .85);
-        hub.rightBack.setPower(rightBackPower * .85);
+        hub.leftFront.setPower(leftFrontPower);
+        hub.rightFront.setPower(rightFrontPower);
+        hub.leftBack.setPower(leftBackPower);
+        hub.rightBack.setPower(rightBackPower);
     }
 
     public void ButtonX(boolean pressed)
