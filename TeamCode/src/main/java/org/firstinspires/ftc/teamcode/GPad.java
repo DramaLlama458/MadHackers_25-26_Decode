@@ -36,7 +36,9 @@ public class GPad
     }
 
     public double scaleInput(double input) 
-    {   return input * input * input;
+    {
+        return input * input * input * 0.8 + input * 0.2;
+        //return input * input * input;
     }
     
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
@@ -45,6 +47,7 @@ public class GPad
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis);
 
+        /*
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
@@ -53,8 +56,24 @@ public class GPad
         double leftBackPower = (y - x + rx) / denominator;
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
+        */
+        double leftFrontPower = y + x + rx;
+        double leftBackPower = y - x + rx;
+        double rightFrontPower = y - x - rx;
+        double rightBackPower = y + x - rx;
 
-        double wheelPowerMultiplier = 0.65;
+        double maxPower = Math.max(Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)), Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower)));
+
+        if (maxPower < 1.0)
+        {   maxPower = 1.0;
+        }
+
+        leftFrontPower /= maxPower;
+        leftBackPower /= maxPower;
+        rightFrontPower /= maxPower;
+        rightBackPower /= maxPower;
+
+        double wheelPowerMultiplier = 0.75;
 
         hub.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
         hub.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
