@@ -42,8 +42,8 @@ public class GPad
 
         return input * input * input * 0.8 + input * 0.2;
     }
-    
-    public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float r_yAxis)
+
+    public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
     {
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
