@@ -44,6 +44,7 @@ public class GPad
     }
 
      // test
+    //Forward and backwards are flipped
     public void Joystick2(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
     {
         double r = Math.sqrt(l_xAxis * l_xAxis + l_yAxis * l_yAxis);
@@ -75,7 +76,7 @@ public class GPad
     {
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
-        double rx = scaleInput(r_xAxis);
+        double rx = scaleInput(r_xAxis*1.3);
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,

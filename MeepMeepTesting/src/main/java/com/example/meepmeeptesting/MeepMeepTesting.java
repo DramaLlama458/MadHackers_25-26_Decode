@@ -14,6 +14,8 @@ public class MeepMeepTesting {
         Pose2d BlueGoalInitialPose = new Pose2d(-49,-49,Math.toRadians(55));
         Pose2d RedAudienceSideInitialPose = new Pose2d(54,21,Math.toRadians(135));
         Pose2d BlueAudienceSideInitialPose = new Pose2d(54,-21,Math.toRadians(-135));
+        Pose2d RedBaseZonePose = new Pose2d(38,-32.5,Math.toRadians(0));
+        Pose2d BlueBaseZonePose = new Pose2d(38,32.5,Math.toRadians(0));
 
         Pose2d CenterPose = new Pose2d(0,0,Math.toRadians(90));
 
@@ -23,7 +25,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(BlueAudienceSideInitialPose)
+        myBot.runAction(myBot.getDrive().actionBuilder(BlueBaseZonePose)
                 .waitSeconds(10)
                 .strafeToLinearHeading(CenterPose.position,CenterPose.heading)
 
