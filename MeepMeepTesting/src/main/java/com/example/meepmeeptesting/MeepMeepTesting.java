@@ -53,7 +53,7 @@ public class MeepMeepTesting {
         myBot.setPose(BlueAudienceSideInitialPose);
         myBot.runAction(myBot.getDrive().actionBuilder(BlueAudienceSideInitialPose)
 
-                //Currently example of potential roadrunner program
+                //Currently example of potential roadrunner program with just movement
                 .waitSeconds(.5)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
                 .waitSeconds(2)
@@ -62,24 +62,29 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(BlueArtifactsMiddleCollectPose.position,BlueArtifactsMiddleCollectPose.heading)
 
                 .waitSeconds(.5)
-                .strafeToLinearHeading(BlueGateSetupPose.position,BlueGateSetupPose.heading)
+                .splineTo(BlueGateSetupPose.position,BlueGateSetupPose.heading)
                 .strafeToLinearHeading(BlueGatePushPose.position,BlueGatePushPose.heading)
                 .waitSeconds(1)
 
                 .strafeToLinearHeading(BlueArtifactsMiddlePose.position,BlueArtifactsMiddlePose.heading)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
-                .waitSeconds(2)
+                .waitSeconds(1.8)
 
                 .strafeToLinearHeading(BlueArtifactsClosePose.position,BlueArtifactsClosePose.heading)
                 .strafeToLinearHeading(BlueArtifactsCloseCollectPose.position,BlueArtifactsCloseCollectPose.heading)
                 .strafeToLinearHeading(BlueArtifactsClosePose.position,BlueArtifactsClosePose.heading)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
-                .waitSeconds(2)
+                .waitSeconds(1.8)
 
                 .strafeToLinearHeading(BlueArtifactsFarPose.position,BlueArtifactsFarPose.heading)
                 .strafeToLinearHeading(BlueArtifactsFarCollectPose.position,BlueArtifactsFarCollectPose.heading)
                 .strafeToLinearHeading(BlueArtifactsFarPose.position,BlueArtifactsFarPose.heading)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
+                .waitSeconds(1.5)
+                //This turn is just here to make sure the waitSeconds command doesn't break and cause the robot to jump to the center.
+                //Replace it at any time.
+                .turn(.01)
+
 
 
                 .build());
