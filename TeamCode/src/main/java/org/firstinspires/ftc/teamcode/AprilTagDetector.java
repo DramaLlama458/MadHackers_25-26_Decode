@@ -69,6 +69,7 @@ public class AprilTagDetector
             {
                 ArrayList<AprilTagDetection> tags;
                 final int blueTag = 20;
+
                 final int[] motifTags = { 21, 22, 23 };
                 final int redTag = 24;
 
@@ -114,7 +115,6 @@ public class AprilTagDetector
                 try {
                     Thread.sleep(milliseconds);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class AprilTagDetector
             mutex.unlock();
         }
 
-        return motif;
+        return m;
     }
 
     public Color[] GetColorOrder()

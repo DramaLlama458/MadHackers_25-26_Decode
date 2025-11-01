@@ -17,14 +17,14 @@ import java.util.function.Consumer;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode  {
-    ControlHubTest hub;
+    ControlHub hub;
     FtcDashboard dash = FtcDashboard.getInstance();
     GPad gpad;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
-        hub = new ControlHubTest(hardwareMap);
+        hub = new ControlHub(hardwareMap, null);
         gpad = new GPad(hub, gamepad1);
 
         waitForStart();

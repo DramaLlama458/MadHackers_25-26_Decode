@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
-
-public class ControlHub {
+public class ControlHub
+{
     MecanumDrive drive;
     public IMU imu;
     public DcMotor leftFront;
@@ -25,7 +25,13 @@ public class ControlHub {
     */
 
 
-    public void init(HardwareMap map, Pose2d initialPose){
+    public ControlHub(HardwareMap map, Pose2d initialPose)
+    {
+        if(initialPose == null)
+        {   initialPose =  new Pose2d(0,0, Math.toRadians(0));
+        }
+        // Initial pose is just so hub can be used for autonomous
+
         imu = map.get(IMU.class,"imu");
         leftFront = map.get(DcMotor.class,"leftFront");
         rightFront = map.get(DcMotor.class,"rightFront");
@@ -34,6 +40,7 @@ public class ControlHub {
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
 
         //This is the code setup for the future motors and servos on the robot
@@ -42,7 +49,5 @@ public class ControlHub {
         outputMotor = map.get(DcMotor.class,"outputMotor");
         inputServo = map.get(CRServo.class,"inputServo");
         */
-
-
     }
 }

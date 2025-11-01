@@ -25,13 +25,12 @@ public class AutoTest extends LinearOpMode{
     private FtcDashboard dash = FtcDashboard.getInstance();
     //TODO: Setup roadrunner variables in robot constants and then set up coefficients here
     @Override
-    public void runOpMode() throws InterruptedException{
-        hub = new ControlHub();
+    public void runOpMode() throws InterruptedException
+    {
         //Initial pose is just so hub can be used for autonomous
         //TODO: Figure out starting position of robot at start of match
         Pose2d initialPose = new Pose2d(0,0, Math.toRadians(0));
-        hub.init(hardwareMap, initialPose);
 
-
+        hub = new ControlHub(hardwareMap, initialPose);
     }
 }

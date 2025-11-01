@@ -20,15 +20,9 @@ public class DriveTrainTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hub = new ControlHub();
-        //Initial pose is just so hub can be used for autonomous
-        Pose2d initialPose = new Pose2d(0,0, Math.toRadians(0));
-        hub.init(hardwareMap, initialPose);
-
-
+        hub = new ControlHub(hardwareMap, null);
 
         waitForStart();
-
 
         if (isStopRequested()) return;
 

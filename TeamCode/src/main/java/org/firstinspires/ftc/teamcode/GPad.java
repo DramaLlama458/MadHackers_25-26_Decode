@@ -9,9 +9,9 @@ public class GPad
 {
     Map<String, Consumer<Boolean>> input = new HashMap<>();
     Gamepad gamepad;
-    ControlHubTest hub;
+    ControlHub hub;
 
-    public GPad(ControlHubTest hb, Gamepad gmp)
+    public GPad(ControlHub hb, Gamepad gmp)
     {
     // Buttons (Boolean)
         input.put("x", this::ButtonX);
