@@ -101,6 +101,11 @@ public class GPad
 
     public void ButtonA(boolean pressed)
     {
+        /*
+
+        hub.conveyorMotor.setPower(.25);
+
+         */
     }
 
     public void ButtonB(boolean pressed)
