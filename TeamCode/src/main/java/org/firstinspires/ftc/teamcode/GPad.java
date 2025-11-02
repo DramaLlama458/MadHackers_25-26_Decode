@@ -42,35 +42,6 @@ public class GPad
 
         return input * input * input * 0.8 + input * 0.2;
     }
-
-     // test
-    //Forward and backwards are flipped
-    public void Joystick2(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
-    {
-        double r = Math.sqrt(l_xAxis * l_xAxis + l_yAxis * l_yAxis);
-        double robotAngle = Math.atan2(l_yAxis, l_xAxis) - Math.PI / 4;
-        double frontLeftPower  = r * Math.cos(robotAngle) + r_xAxis;
-        double frontRightPower = r * Math.sin(robotAngle) - r_xAxis;
-        double backLeftPower   = r * Math.sin(robotAngle) + r_xAxis;
-        double backRightPower  = r * Math.cos(robotAngle) - r_xAxis;
-        double max = Math.max(Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)));
-        if (max > 1.0)
-        {
-            frontLeftPower  /= max;
-            frontRightPower /= max;
-            backLeftPower   /= max;
-            backRightPower  /= max;
-        }
-        double wheelPowerMultiplier = 0.75;
-        frontLeftPower  *= wheelPowerMultiplier;
-        frontRightPower *= wheelPowerMultiplier;
-        backLeftPower   *= wheelPowerMultiplier;
-        backRightPower  *= wheelPowerMultiplier;
-        hub.leftFront.setPower(frontLeftPower);
-        hub.rightFront.setPower(frontRightPower);
-        hub.leftBack.setPower(backLeftPower);
-        hub.rightBack.setPower(backRightPower);
-    }
     
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float r_yAxis)
     {
