@@ -13,19 +13,14 @@ public class GPad
 
     public GPad(ControlHub hb, Gamepad gmp)
     {
-    // Buttons (Boolean)
         input.put("x", this::ButtonX);
         input.put("a", this::ButtonA);
         input.put("b", this::ButtonB);
         input.put("y", this::ButtonY);
         input.put("left_bumper", this::ButtonLeftBumper);
         input.put("right_bumper", this::ButtonRightBumper);
-        input.put("left_trigger", this::ButtonLeftTrigger);
-        input.put("right_trigger", this::ButtonRightTrigger);
         input.put("back", this::ButtonBack);
         input.put("start", this::ButtonStart);
-        input.put("left_stick_this::Button", this::ButtonLeftJoystick);
-        input.put("right_stick_this::Button", this::ButtonRightJoystick);
         input.put("dpad_up", this::DpadUp);
         input.put("dpad_down", this::DpadDown);
         input.put("dpad_left", this::DpadLeft);
@@ -95,11 +90,11 @@ public class GPad
     {
     }
 
-    public void ButtonLeftTrigger(boolean pressed)
+    public void ButtonLeftTrigger(float pressAmount)
     {
     }
 
-    public void ButtonRightTrigger(boolean pressed)
+    public void ButtonRightTrigger(float pressAmount)
     {
     }
 
@@ -160,6 +155,8 @@ public class GPad
             }
         }
 
+        ButtonLeftTrigger(gamepad.left_trigger);
+        ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
     }
 }
