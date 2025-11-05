@@ -31,11 +31,7 @@ public class GPad
     }
 
     public double scaleInput(double input) 
-    {
-        /* old code */
-        //return input * input * input;
-
-        return input * input * input * 0.8 + input * 0.2;
+    {    return input * input * input * 0.8 + input * 0.2;
     }
     
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float r_yAxis)
@@ -92,6 +88,15 @@ public class GPad
 
     public void ButtonLeftTrigger(float pressAmount)
     {
+        final float DEADZONE_THRESHOLD = 0.075f;
+        float conveyorPower = 0f;
+        float multiplier = .6f;
+        
+        if(pressAmount >= DEADZONE_THRESHOLD)
+        {   conveyorPower = scaledInput(pressAmount);
+        }
+        
+        hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonRightTrigger(float pressAmount)
