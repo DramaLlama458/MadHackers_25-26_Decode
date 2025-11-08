@@ -15,8 +15,9 @@ public class ControlHub
     public DcMotor leftBack;
     public DcMotor rightBack;
 
-    /*
+
     public DcMotor conveyorMotor;
+    /*
     public DcMotor outputMotor;
     public CRServo inputServo;
     public double conveyorSpeed = 0;
@@ -43,9 +44,10 @@ public class ControlHub
 
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
 
+
+        conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
         //This is the code setup for the future motors and servos on the robot
         /*
-        conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
         outputMotor = map.get(DcMotor.class,"outputMotor");
         inputServo = map.get(CRServo.class,"inputServo");
         */

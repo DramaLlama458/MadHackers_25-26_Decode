@@ -13,19 +13,14 @@ public class GPad
 
     public GPad(ControlHub hb, Gamepad gmp)
     {
-    // Buttons (Boolean)
         input.put("x", this::ButtonX);
         input.put("a", this::ButtonA);
         input.put("b", this::ButtonB);
         input.put("y", this::ButtonY);
         input.put("left_bumper", this::ButtonLeftBumper);
         input.put("right_bumper", this::ButtonRightBumper);
-        input.put("left_trigger", this::ButtonLeftTrigger);
-        input.put("right_trigger", this::ButtonRightTrigger);
         input.put("back", this::ButtonBack);
         input.put("start", this::ButtonStart);
-        input.put("left_stick_this::Button", this::ButtonLeftJoystick);
-        input.put("right_stick_this::Button", this::ButtonRightJoystick);
         input.put("dpad_up", this::DpadUp);
         input.put("dpad_down", this::DpadDown);
         input.put("dpad_left", this::DpadLeft);
@@ -36,40 +31,7 @@ public class GPad
     }
 
     public double scaleInput(double input) 
-    {
-        /* old code */
-        //return input * input * input;
-
-        return input * input * input * 0.8 + input * 0.2;
-    }
-
-     // test
-    //Forward and backwards are flipped
-    public void Joystick2(float l_xAxis, float l_yAxis, float r_xAxis, float y_xAxis)
-    {
-        double r = Math.sqrt(l_xAxis * l_xAxis + l_yAxis * l_yAxis);
-        double robotAngle = Math.atan2(l_yAxis, l_xAxis) - Math.PI / 4;
-        double frontLeftPower  = r * Math.cos(robotAngle) + r_xAxis;
-        double frontRightPower = r * Math.sin(robotAngle) - r_xAxis;
-        double backLeftPower   = r * Math.sin(robotAngle) + r_xAxis;
-        double backRightPower  = r * Math.cos(robotAngle) - r_xAxis;
-        double max = Math.max(Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)), Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)));
-        if (max > 1.0)
-        {
-            frontLeftPower  /= max;
-            frontRightPower /= max;
-            backLeftPower   /= max;
-            backRightPower  /= max;
-        }
-        double wheelPowerMultiplier = 0.75;
-        frontLeftPower  *= wheelPowerMultiplier;
-        frontRightPower *= wheelPowerMultiplier;
-        backLeftPower   *= wheelPowerMultiplier;
-        backRightPower  *= wheelPowerMultiplier;
-        hub.leftFront.setPower(frontLeftPower);
-        hub.rightFront.setPower(frontRightPower);
-        hub.leftBack.setPower(backLeftPower);
-        hub.rightBack.setPower(backRightPower);
+    {    return input * input * input * 0.8 + input * 0.2;
     }
     
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float r_yAxis)
@@ -101,6 +63,11 @@ public class GPad
 
     public void ButtonA(boolean pressed)
     {
+        /*
+
+        hub.conveyorMotor.setPower(.25);
+
+         */
     }
 
     public void ButtonB(boolean pressed)
@@ -119,11 +86,20 @@ public class GPad
     {
     }
 
-    public void ButtonLeftTrigger(boolean pressed)
+    public void ButtonLeftTrigger(float pressAmount)
     {
+        final float DEADZONE_THRESHOLD = 0.075f;
+        float conveyorPower = 0f;
+        float multiplier = .6f;
+        
+        if(pressAmount >= DEADZONE_THRESHOLD)
+        {   conveyorPower = scaledInput(pressAmount);
+        }
+        
+        hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
-    public void ButtonRightTrigger(boolean pressed)
+    public void ButtonRightTrigger(float pressAmount)
     {
     }
 
@@ -184,6 +160,8 @@ public class GPad
             }
         }
 
+        ButtonLeftTrigger(gamepad.left_trigger);
+        ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
     }
 }
