@@ -1,6 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.service.controls.Control;
+
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.TankDrive;
+import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -24,24 +33,20 @@ public class AutoOPMain extends LinearOpMode  {
 
     Pose2d START_POSE = new Pose2d(0, 0, Math.toRadians(0));
     Pose2d TARGET_POSE = new Pose2d(10, 10, Math.toRadians(90));
-    Action path;
 
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         hub = new ControlHub(hardwareMap, START_POSE);
-
-        path = hub.drive.actionBuilder(START_POSE)
-                .waitSeconds(1)
-                .strafeToLinearHeading(TARGET_POSE.position, TARGET_POSE.heading)
-                .build();
-        waitForStart();
-
         while (opModeIsActive() && !isStopRequested())
         {
-            path.run(new TelemetryPacket());
-            //dash.sendTelemetryPacket(new TelemetryPacket());
+            Actions.runBlocking(
+                    hub.drive.actionBuilder(new Pose2d(0, 0, 0))
+                            .lineToX(10)
+                            .lineToX(0)
+                            .build());
+            dash.sendTelemetryPacket(new TelemetryPacket());
         }
     }
 }
