@@ -31,6 +31,7 @@ public class AutoOPMain extends LinearOpMode  {
     public void runOpMode() throws InterruptedException
     {
         hub = new ControlHub(hardwareMap, START_POSE);
+
         path = hub.drive.actionBuilder(START_POSE)
                 .waitSeconds(1)
                 .strafeToLinearHeading(TARGET_POSE.position, TARGET_POSE.heading)
