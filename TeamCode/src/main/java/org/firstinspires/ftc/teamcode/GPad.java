@@ -11,6 +11,10 @@ public class GPad
     Gamepad gamepad;
     ControlHub hub;
 
+    public final int MAX_GEAR = 4;
+    public final int MIN_GEAR = 1;
+    private int gear = MIN_GEAR;
+
     public GPad(ControlHub hb, Gamepad gmp)
     {
         input.put("x", this::ButtonX);
@@ -38,7 +42,7 @@ public class GPad
     {
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
-        double rx = scaleInput(r_xAxis*1.3);
+        double rx = scaleInput(r_xAxis * 1.3);
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
@@ -49,7 +53,8 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        double wheelPowerMultiplier = 0.75;
+        double gearMultiplier = .10;
+        double wheelPowerMultiplier = 0.65 * (1 + (gear - 1) * gearMultiplier);
 
         hub.drive.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
         hub.drive.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
@@ -80,10 +85,12 @@ public class GPad
 
     public void ButtonLeftBumper(boolean pressed)
     {
+        gear = Math.max(gear - 1, MIN_GEAR);
     }
 
     public void ButtonRightBumper(boolean pressed)
     {
+        gear = Math.min(gear + 1, MAX_GEAR);
     }
 
     public void ButtonLeftTrigger(float pressAmount)
