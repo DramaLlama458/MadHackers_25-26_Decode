@@ -11,7 +11,7 @@ public class GPad
     Gamepad gamepad;
     ControlHub hub;
 
-    public final int MAX_GEAR = 4;
+    public final int MAX_GEAR = 10;
     public final int MIN_GEAR = 1;
     private int gear = MIN_GEAR;
 
@@ -85,12 +85,19 @@ public class GPad
 
     public void ButtonLeftBumper(boolean pressed)
     {
-        gear = Math.max(gear - 1, MIN_GEAR);
+        if(pressed)
+        {
+            gear = Math.max(gear - 1, MIN_GEAR);
+
+        }
     }
 
     public void ButtonRightBumper(boolean pressed)
     {
-        gear = Math.min(gear + 1, MAX_GEAR);
+        if(pressed)
+        {
+            gear = Math.min(gear + 1, MAX_GEAR);
+        }
     }
 
     public void ButtonLeftTrigger(float pressAmount)
