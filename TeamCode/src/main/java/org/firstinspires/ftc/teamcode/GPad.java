@@ -11,7 +11,7 @@ public class GPad
     Gamepad gamepad;
     ControlHub hub;
 
-    public final int MAX_GEAR = 10;
+    public final int MAX_GEAR = 4;
     public final int MIN_GEAR = 1;
     private int gear = MIN_GEAR;
 
@@ -56,8 +56,8 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        double gearMultiplier = .15;
-        double wheelPowerMultiplier = 0.60 * (1 + (gear - 1) * gearMultiplier);
+        double gearMultiplier = .25;
+        double wheelPowerMultiplier = 0.5 * (1 + (gear - 1) * gearMultiplier);
 
         hub.drive.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
         hub.drive.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
