@@ -59,6 +59,7 @@ public class    MeepMeepTesting {
                 .waitSeconds(2)
 
                 .strafeToLinearHeading(BlueArtifactsMiddlePose.position,BlueArtifactsMiddlePose.heading)
+                /*
                 .strafeToLinearHeading(BlueArtifactsMiddleCollectPose.position,BlueArtifactsMiddleCollectPose.heading)
 
                 .waitSeconds(.5)
@@ -84,6 +85,8 @@ public class    MeepMeepTesting {
                 //This turn is just here to make sure the waitSeconds command doesn't break and cause the robot to jump to the center.
                 //Replace it at any time.
                 .turn(.01)
+
+                 */
 
 
 
