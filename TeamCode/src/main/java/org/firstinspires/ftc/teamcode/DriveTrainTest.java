@@ -97,9 +97,9 @@ public class DriveTrainTest extends LinearOpMode {
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.leftFront.setPower(leftFrontPower);
-        hub.rightFront.setPower(rightFrontPower);
-        hub.leftBack.setPower(leftBackPower);
-        hub.rightBack.setPower(rightBackPower);
+        hub.drive.leftFront.setPower(leftFrontPower);
+        hub.drive.rightFront.setPower(rightFrontPower);
+        hub.drive.leftBack.setPower(leftBackPower);
+        hub.drive.rightBack.setPower(rightBackPower);
     }
 }

@@ -60,7 +60,7 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
         // 5203 312 rpm motors: 537.7 ticks per revolution
@@ -68,14 +68,15 @@ public final class MecanumDrive {
         // Converts to 12.86321401468504 inches
         // Theoretical inches per tick 0.0239226595
 
-        public double inPerTick = 1;
+        public double inPerTick = 0.0239226595;
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 0;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        //These values are not accurate and have just been put for testing
+        public double kS = 0.5;
+        public double kV = 0.5;
+        public double kA = 0.5;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;

@@ -23,7 +23,7 @@ public class AutoOPMain extends LinearOpMode  {
     FtcDashboard dash = FtcDashboard.getInstance();
 
     Pose2d START_POSE = new Pose2d(0, 0, Math.toRadians(0));
-    Pose2d TARGET_POSE = new Pose2d(0, 0, Math.toRadians(90));
+    Pose2d TARGET_POSE = new Pose2d(10, 10, Math.toRadians(90));
     Action path;
 
 

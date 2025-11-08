@@ -66,15 +66,17 @@ public class AutoTest extends LinearOpMode{
 
         hub = new ControlHub(hardwareMap, RedAudienceSideInitialPose);
 
+
+
         TrajectoryActionBuilder testMovement = hub.drive.actionBuilder(RedAudienceSideInitialPose)
                 .waitSeconds(.5)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
                 .waitSeconds(2)
-
                 .strafeToLinearHeading(BlueArtifactsMiddlePose.position,BlueArtifactsMiddlePose.heading);
         Action action_testMovement = testMovement.build();
+
         waitForStart();
 
-        Actions.runBlocking( action_testMovement      );
+        Actions.runBlocking( new SequentialAction(action_testMovement)      );
     }
 }
