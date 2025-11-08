@@ -30,7 +30,7 @@ public class DriveTrainTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            wheelMovement();
+            //wheelMovement();
 
             if(gamepad1.left_trigger>=0.1){
                 conveyorPower = gamepad1.left_trigger/2;
