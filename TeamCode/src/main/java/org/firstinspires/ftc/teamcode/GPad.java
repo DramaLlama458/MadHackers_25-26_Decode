@@ -15,6 +15,9 @@ public class GPad
     public final int MIN_GEAR = 1;
     private int gear = MIN_GEAR;
 
+    private boolean leftBumperAlreadyPressed = false;
+    private boolean rightBumperAlreadyPressed = false;
+
     public GPad(ControlHub hb, Gamepad gmp)
     {
         input.put("x", this::ButtonX);
@@ -53,8 +56,8 @@ public class GPad
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        double gearMultiplier = .10;
-        double wheelPowerMultiplier = 0.65 * (1 + (gear - 1) * gearMultiplier);
+        double gearMultiplier = .15;
+        double wheelPowerMultiplier = 0.60 * (1 + (gear - 1) * gearMultiplier);
 
         hub.drive.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
         hub.drive.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
@@ -85,15 +88,28 @@ public class GPad
 
     public void ButtonLeftBumper(boolean pressed)
     {
+        /* only handle first input */
+        if(leftBumperAlreadyPressed && pressed)
+        {   return;
+        }
+
+        leftBumperAlreadyPressed = pressed;
+
         if(pressed)
         {
             gear = Math.max(gear - 1, MIN_GEAR);
-
         }
     }
 
     public void ButtonRightBumper(boolean pressed)
     {
+        /* only handle first input */
+        if(rightBumperAlreadyPressed && pressed)
+        {   return;
+        }
+
+        rightBumperAlreadyPressed = pressed;
+
         if(pressed)
         {
             gear = Math.min(gear + 1, MAX_GEAR);
