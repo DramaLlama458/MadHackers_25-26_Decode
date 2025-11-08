@@ -9,12 +9,13 @@ import com.qualcomm.robotcore.hardware.IMU;
 public class ControlHub
 {
     MecanumDrive drive;
+    /*
     public IMU imu;
     public DcMotor leftFront;
     public DcMotor rightFront;
     public DcMotor leftBack;
     public DcMotor rightBack;
-
+    */
 
     public DcMotor conveyorMotor;
     /*
@@ -32,16 +33,18 @@ public class ControlHub
         {   initialPose =  new Pose2d(0,0, Math.toRadians(0));
         }
         // Initial pose is just so hub can be used for autonomous
-
+        /*
         imu = map.get(IMU.class,"imu");
+
         leftFront = map.get(DcMotor.class,"leftFront");
         rightFront = map.get(DcMotor.class,"rightFront");
         leftBack = map.get(DcMotor.class,"leftBack");
         rightBack = map.get(DcMotor.class,"rightBack");
 
+
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        */
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
 
 

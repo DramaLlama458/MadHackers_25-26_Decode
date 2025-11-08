@@ -51,10 +51,10 @@ public class GPad
 
         double wheelPowerMultiplier = 0.75;
 
-        hub.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
-        hub.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
-        hub.leftBack.setPower(leftBackPower * wheelPowerMultiplier);
-        hub.rightBack.setPower(rightBackPower * wheelPowerMultiplier);
+        hub.drive.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
+        hub.drive.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
+        hub.drive.leftBack.setPower(leftBackPower * wheelPowerMultiplier);
+        hub.drive.rightBack.setPower(rightBackPower * wheelPowerMultiplier);
     }
 
     public void ButtonX(boolean pressed)
@@ -89,11 +89,11 @@ public class GPad
     public void ButtonLeftTrigger(float pressAmount)
     {
         final float DEADZONE_THRESHOLD = 0.075f;
-        float conveyorPower = 0f;
+        double conveyorPower = 0f;
         float multiplier = .6f;
         
         if(pressAmount >= DEADZONE_THRESHOLD)
-        {   conveyorPower = scaledInput(pressAmount);
+        {   conveyorPower = scaleInput(pressAmount);
         }
         
         hub.conveyorMotor.setPower(conveyorPower * multiplier);
