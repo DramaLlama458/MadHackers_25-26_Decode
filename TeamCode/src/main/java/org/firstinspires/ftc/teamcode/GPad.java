@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.*;
@@ -17,6 +20,15 @@ public class GPad
 
     private boolean leftBumperAlreadyPressed = false;
     private boolean rightBumperAlreadyPressed = false;
+    DriveMode driveMode = DriveMode.RobotCentric;
+
+    enum
+    DriveMode
+    {
+        RobotCentric,
+        FieldCentric,
+    }
+
 
     public GPad(ControlHub hb, Gamepad gmp)
     {
@@ -47,14 +59,40 @@ public class GPad
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis * 1.3);
 
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio,
-        // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double leftFrontPower = (y + x + rx) / denominator;
-        double leftBackPower = (y - x + rx) / denominator;
-        double rightFrontPower = (y - x - rx) / denominator;
-        double rightBackPower = (y + x - rx) / denominator;
+        double denominator;
+        double leftFrontPower = .0;
+        double leftBackPower = .0;
+        double rightFrontPower = .0;
+        double rightBackPower = .0;
+
+        switch(this.driveMode)
+        {
+            case FieldCentric:
+                // Denominator is the largest motor power (absolute value) or 1
+                // This ensures all the powers maintain the same ratio,
+                // but only if at least one is out of the range [-1, 1]
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+                leftFrontPower = (y + x + rx) / denominator;
+                leftBackPower = (y - x + rx) / denominator;
+                rightFrontPower = (y - x - rx) / denominator;
+                rightBackPower = (y + x - rx) / denominator;
+
+                break;
+            case RobotCentric:
+                double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+                double rotationX = x * Math.cos(-botAngle) - y * Math.sin(-botAngle);
+                double rotationY = x * Math.sin(-botAngle) + y * Math.cos(-botAngle);
+
+                denominator = Math.max(Math.abs(rotationY) + Math.abs(rotationX) + Math.abs(rx), 1);
+
+                leftFrontPower = (rotationY + rotationX + rx) / denominator;
+                leftBackPower = (rotationY - rotationX + rx) / denominator;
+                rightFrontPower = (rotationY - rotationX - rx) / denominator;
+                rightBackPower = (rotationY + rotationX - rx) / denominator;
+
+                break;
+        }
 
         double gearMultiplier = .25;
         double wheelPowerMultiplier = 0.5 * (1 + (gear - 1) * gearMultiplier);
@@ -71,6 +109,7 @@ public class GPad
 
     public void ButtonA(boolean pressed)
     {
+
         /*
 
         hub.conveyorMotor.setPower(.25);
@@ -82,8 +121,46 @@ public class GPad
     {
     }
 
+    public static double normalizeRadians(double angle) {
+        angle = angle % (2 * Math.PI);
+        if (angle < 0) angle += 2 * Math.PI;
+        return angle;
+    }
+
+
     public void ButtonY(boolean pressed)
     {
+        /*
+        if(!pressed)
+        {
+            driveMode = DriveMode.RobotCentric;
+            return;
+        }
+
+        driveMode = DriveMode.FieldCentric;
+
+        // test maintain this angle.
+        final double ONE_RADIAN = 2 * Math.PI;
+
+        double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        // Test values for now.
+        double targetAngle = botAngle * 1.5;
+
+        // RotationSpeed Per Second.
+        double rotationSpeed = ONE_RADIAN * .15;
+
+
+        // normalize radians.
+        targetAngle = normalizeRadians(targetAngle);
+
+
+        double leftFrontPower = ;
+        double rightFrontPower = ;
+        double leftBackPower = ;
+        double rightBackPower = ;
+
+        */
     }
 
     public void ButtonLeftBumper(boolean pressed)
