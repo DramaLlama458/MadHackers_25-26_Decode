@@ -64,15 +64,30 @@ public class AutoTest extends LinearOpMode{
         Pose2d CenterFaceGoalsPose = new Pose2d(0,0,Math.toRadians(180));
         Pose2d CenterFaceAudiencePose = new Pose2d(0,0,Math.toRadians(0));
 
+        Pose2d BlueArtifactsBetweenCloseMiddlePose = new Pose2d(24,-29,Math.toRadians(-90));
+        Pose2d BlueArtifactsBetweenCloseMiddleHalfwayPose = new Pose2d(24,-45,Math.toRadians(-90));
+
+        Pose2d BlueArtifactsBetweenFarMiddlePose = new Pose2d(0.5,-29,Math.toRadians(-90));
+        Pose2d BlueArtifactsBetweenFarMiddleHalfwayPose = new Pose2d(0.5,-45,Math.toRadians(-90));
+
+        Pose2d BluePushToGoalPose = new Pose2d(-39,-49,Math.toRadians(55));
+
+        Pose2d RedArtifactsBetweenCloseMiddlePose = new Pose2d(24,29,Math.toRadians(90));
+        Pose2d RedArtifactsBetweenCloseMiddleHalfwayPose = new Pose2d(24,45,Math.toRadians(90));
+
+        Pose2d RedArtifactsBetweenFarMiddlePose = new Pose2d(0.5,29,Math.toRadians(90));
+        Pose2d RedArtifactsBetweenFarMiddleHalfwayPose = new Pose2d(0.5,45,Math.toRadians(90));
+
+        Pose2d RedPushToGoalPose = new Pose2d(-39,49,Math.toRadians(-35));
         hub = new ControlHub(hardwareMap, RedAudienceSideInitialPose);
 
 
 
-        TrajectoryActionBuilder testMovement = hub.drive.actionBuilder(RedAudienceSideInitialPose)
+        TrajectoryActionBuilder testMovement = hub.drive.actionBuilder(BlueAudienceSideInitialPose)
                 .waitSeconds(.5)
-                .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
-                .waitSeconds(2)
-                .strafeToLinearHeading(BlueArtifactsMiddlePose.position,BlueArtifactsMiddlePose.heading);
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddlePose.position,BlueArtifactsBetweenCloseMiddlePose.heading)
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddleHalfwayPose.position,BlueArtifactsBetweenCloseMiddleHalfwayPose.heading)
+                .strafeToLinearHeading(BlueLoadingZonePose.position,Math.toRadians(-90));
         Action action_testMovement = testMovement.build();
 
         waitForStart();

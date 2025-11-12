@@ -46,6 +46,26 @@ public class    MeepMeepTesting {
         Pose2d CenterFaceAudiencePose = new Pose2d(0,0,Math.toRadians(0));
 
 
+        Pose2d BlueArtifactsBetweenCloseMiddlePose = new Pose2d(24,-29,Math.toRadians(-90));
+        Pose2d BlueArtifactsBetweenCloseMiddleHalfwayPose = new Pose2d(24,-45,Math.toRadians(-90));
+
+        Pose2d BlueArtifactsBetweenFarMiddlePose = new Pose2d(0.5,-29,Math.toRadians(-90));
+        Pose2d BlueArtifactsBetweenFarMiddleHalfwayPose = new Pose2d(0.5,-45,Math.toRadians(-90));
+
+        Pose2d BluePushToGoalPose = new Pose2d(-39,-49,Math.toRadians(55));
+
+        Pose2d RedArtifactsBetweenCloseMiddlePose = new Pose2d(24,29,Math.toRadians(90));
+        Pose2d RedArtifactsBetweenCloseMiddleHalfwayPose = new Pose2d(24,45,Math.toRadians(90));
+
+        Pose2d RedArtifactsBetweenFarMiddlePose = new Pose2d(0.5,29,Math.toRadians(90));
+        Pose2d RedArtifactsBetweenFarMiddleHalfwayPose = new Pose2d(0.5,45,Math.toRadians(90));
+
+        Pose2d RedPushToGoalPose = new Pose2d(-39,49,Math.toRadians(-35));
+
+
+
+
+
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
@@ -54,12 +74,55 @@ public class    MeepMeepTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(BlueAudienceSideInitialPose)
 
                 //Currently example of potential roadrunner program with just movement
+
+                /*
+                Potential auto for red goal start, pushes artifacts towards depot
+
+
+                .strafeToLinearHeading(RedTestScoringPose.position,Math.toRadians(90))
+                .strafeToLinearHeading(RedArtifactsBetweenFarMiddlePose.position,RedArtifactsBetweenFarMiddlePose.heading)
+                .strafeToLinearHeading(RedArtifactsBetweenFarMiddleHalfwayPose.position,RedArtifactsBetweenFarMiddleHalfwayPose.heading)
+                .strafeToLinearHeading(RedPushToGoalPose.position,Math.toRadians(90))
+
+                 */
+
+
+
+
+                /*
+                Potential blue audience side auto to push artifacts to loading zone
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddlePose.position,BlueArtifactsBetweenCloseMiddlePose.heading)
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddleHalfwayPose.position,BlueArtifactsBetweenCloseMiddleHalfwayPose.heading)
+                .strafeToLinearHeading(BlueLoadingZonePose.position,Math.toRadians(-90))
+
+                 */
+
+                /*
+                Potential auto for blue goal start, pushes artifacts towards depot
+                .strafeToLinearHeading(BlueTestScoringPose.position,Math.toRadians(-90))
+                .strafeToLinearHeading(BlueArtifactsBetweenFarMiddlePose.position,BlueArtifactsBetweenFarMiddlePose.heading)
+                .strafeToLinearHeading(BlueArtifactsBetweenFarMiddleHalfwayPose.position,BlueArtifactsBetweenFarMiddleHalfwayPose.heading)
+                .strafeToLinearHeading(BluePushToGoalPose.position,Math.toRadians(-90))
+
+                 */
+
+
+
+                //Potential blue audience side auto to push artifacts to loading zone
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddlePose.position,BlueArtifactsBetweenCloseMiddlePose.heading)
+                .strafeToLinearHeading(BlueArtifactsBetweenCloseMiddleHalfwayPose.position,BlueArtifactsBetweenCloseMiddleHalfwayPose.heading)
+                .strafeToLinearHeading(BlueLoadingZonePose.position,Math.toRadians(-90))
+
+
+
+
+                /*
                 .waitSeconds(.5)
                 .strafeToLinearHeading(BlueTestScoringPose.position,BlueTestScoringPose.heading)
                 .waitSeconds(2)
 
                 .strafeToLinearHeading(BlueArtifactsMiddlePose.position,BlueArtifactsMiddlePose.heading)
-                /*
+
                 .strafeToLinearHeading(BlueArtifactsMiddleCollectPose.position,BlueArtifactsMiddleCollectPose.heading)
 
                 .waitSeconds(.5)
