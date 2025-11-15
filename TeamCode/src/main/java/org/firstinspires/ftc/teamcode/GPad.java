@@ -264,7 +264,7 @@ public class GPad
     {
         final float DEADZONE_THRESHOLD = 0.075f;
         double conveyorPower = 0f;
-        float multiplier = .6f;
+        float multiplier = .25f;
         
         if(pressAmount >= DEADZONE_THRESHOLD)
         {   conveyorPower = pressAmount;
@@ -288,6 +288,15 @@ public class GPad
 
     public void ButtonBack(boolean pressed)
     {
+        final float DEADZONE_THRESHOLD = 0.075f;
+        double conveyorPower = 0f;
+        float multiplier = .4f;
+
+        if(pressAmount >= DEADZONE_THRESHOLD)
+        {   conveyorPower = -1;
+        }
+
+        hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonStart(boolean pressed)
@@ -332,8 +341,23 @@ public class GPad
         DpadDown(gamepad.dpad_down);
         DpadLeft(gamepad.dpad_left);
         DpadRight(gamepad.dpad_right);
-        ButtonLeftTrigger(gamepad.left_trigger);
-        ButtonRightTrigger(gamepad.right_trigger);
+        //ButtonLeftTrigger(gamepad.left_trigger);
+        //ButtonRightTrigger(gamepad.right_trigger);
+        double conveyorPower = 0;
+        if(gamepad.left_trigger>=0.1){
+            conveyorPower = gamepad.left_trigger/5;
+        }
+        if(gamepad.right_trigger>=0.1){
+            conveyorPower = -gamepad.right_trigger/5;
+        }
+        if(gamepad.left_trigger<0.1 && gamepad.right_trigger<0.1){
+            conveyorPower = 0;
+        }
+
+
+
+        hub.conveyorMotor.setPower(conveyorPower);
+
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
         // clamp

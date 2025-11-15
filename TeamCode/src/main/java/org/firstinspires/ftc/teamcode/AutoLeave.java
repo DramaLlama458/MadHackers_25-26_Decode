@@ -35,14 +35,14 @@ public class AutoLeave  extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            if(getRuntime()<.5) {
+            if(getRuntime()<1) {
                 hub.drive.leftFront.setPower(0.4);
                 hub.drive.rightFront.setPower(0.4);
                 hub.drive.leftBack.setPower(0.4);
                 hub.drive.rightBack.setPower(0.4);
             }
 
-            if(getRuntime()>.5) {
+            if(getRuntime()>1) {
                 hub.drive.leftFront.setPower(0);
                 hub.drive.rightFront.setPower(0);
                 hub.drive.leftBack.setPower(0);
