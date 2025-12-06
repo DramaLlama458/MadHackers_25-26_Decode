@@ -22,8 +22,7 @@ public class DriveTrainTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hub = new ControlHub(hardwareMap, null);
 
-
-        double conveyorPower;
+        double conveyorPower = 0;
 
         waitForStart();
 
@@ -33,10 +32,17 @@ public class DriveTrainTest extends LinearOpMode {
             wheelMovement();
 
             if(gamepad1.left_trigger>=0.1){
-                conveyorPower = gamepad1.left_trigger/2;
-            }else{
+                conveyorPower = gamepad1.left_trigger/6;
+            }
+            if(gamepad1.right_trigger>=0.1){
+                conveyorPower = -gamepad1.right_trigger/6;
+            }
+            if(gamepad1.left_trigger<0.1 && gamepad1.right_trigger<0.1){
                 conveyorPower = 0;
             }
+
+
+
             hub.conveyorMotor.setPower(conveyorPower);
 
             dash.sendTelemetryPacket(new TelemetryPacket());
@@ -97,13 +103,14 @@ public class DriveTrainTest extends LinearOpMode {
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.drive.leftFront.setPower(leftFrontPower);
-        hub.drive.rightFront.setPower(rightFrontPower);
-        hub.drive.leftBack.setPower(leftBackPower);
-        hub.drive.rightBack.setPower(rightBackPower);
-        telemetry.addLine("leftFront encoder"+ hub.drive.leftFront.getCurrentPosition());
-        telemetry.addLine("rightFront encoder"+ hub.drive.rightFront.getCurrentPosition());
-        telemetry.addLine("leftBack encoder"+ hub.drive.leftBack.getCurrentPosition());
-        telemetry.addLine("rightBack encoder"+ hub.drive.rightBack.getCurrentPosition());
+        hub.drive.leftFront.setPower(leftFrontPower*.75);
+        hub.drive.rightFront.setPower(rightFrontPower*.75);
+        hub.drive.leftBack.setPower(leftBackPower*.75);
+        hub.drive.rightBack.setPower(rightBackPower*.75);
+
+        telemetry.addData("X",x);
+        telemetry.addData("Y",y);
+        telemetry.addData("RX",rx);
+        updateTelemetry(telemetry);
     }
 }
