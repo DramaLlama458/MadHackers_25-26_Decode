@@ -38,7 +38,7 @@ public class AutoOPMain extends LinearOpMode  {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        hub = new ControlHub(hardwareMap, START_POSE);
+        hub = new ControlHub(hardwareMap, START_POSE, telemetry);
         waitForStart();
         while (opModeIsActive() && !isStopRequested())
         {

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class ControlHub
 {
     MecanumDrive drive;
@@ -18,6 +20,7 @@ public class ControlHub
     */
 
     public DcMotor conveyorMotor;
+    public Telemetry telemetry;
     /*
     public DcMotor outputMotor;
     public CRServo inputServo;
@@ -27,7 +30,7 @@ public class ControlHub
     */
 
 
-    public ControlHub(HardwareMap map, Pose2d initialPose)
+    public ControlHub(HardwareMap map, Pose2d initialPose, Telemetry tel)
     {
         if(initialPose == null)
         {   initialPose =  new Pose2d(0,0, Math.toRadians(0));
@@ -46,7 +49,7 @@ public class ControlHub
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         */
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
-
+        telemetry = tel;
         conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
         //This is the code setup for the future motors and servos on the robot
         /*

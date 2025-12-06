@@ -20,7 +20,7 @@ public class DriveTrainTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hub = new ControlHub(hardwareMap, null);
+        hub = new ControlHub(hardwareMap, null, telemetry);
 
         double conveyorPower = 0;
 

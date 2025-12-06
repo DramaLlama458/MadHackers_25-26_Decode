@@ -79,7 +79,7 @@ public class AutoTest extends LinearOpMode{
         Pose2d RedArtifactsBetweenFarMiddleHalfwayPose = new Pose2d(0.5,45,Math.toRadians(90));
 
         Pose2d RedPushToGoalPose = new Pose2d(-39,49,Math.toRadians(-35));
-        hub = new ControlHub(hardwareMap, RedAudienceSideInitialPose);
+        hub = new ControlHub(hardwareMap, RedAudienceSideInitialPose, telemetry);
 
 
 

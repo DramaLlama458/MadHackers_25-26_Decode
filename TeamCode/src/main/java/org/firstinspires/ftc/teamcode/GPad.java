@@ -159,6 +159,7 @@ public class GPad
         final double rotationSpeedMult = .6;
         double targetAngle;
         double currentAngle;
+        double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         AprilTagDetection tag = aprilTagDetector.GetTeam();
         AprilTagPoseFtc pose = null;
         AprilTagDetector.TeamColor teamColor = aprilTagDetector.GetTeamColor();
@@ -173,7 +174,6 @@ public class GPad
             AprilTagDetection lastSeenTeam = aprilTagDetector.GetLastSeenTeam();
             Pose3D lastSeenRobotPose;
             double lastSeenRotation = 0;
-            double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             double rotationSpeed = 0;
 
             if(lastSeenTeam != null)
@@ -188,32 +188,16 @@ public class GPad
             }
             else
             {
-                // BASED ON OPPOSITE TEAM TAG DETECTION.
-                // Were on blue team
-                if(teamColor == AprilTagDetector.TeamColor.Red)
+                AprilTagDetection opp = (teamColor == AprilTagDetector.TeamColor.Red) ?
+                        aprilTagDetector.GetLastSeenBlue() :
+                        aprilTagDetector.GetLastSeenRed();
+
+                if(opp != null)
                 {
-                    AprilTagDetection blue = aprilTagDetector.GetLastSeenBlue();
+                    double target = opp.robotPose.getOrientation().getYaw(AngleUnit.RADIANS);
+                    double error = AngleUnit.normalizeRadians(target - botAngle);
 
-                    if(blue != null)
-                    {
-                        double oppYaw = blue.robotPose.getOrientation().getYaw(AngleUnit.RADIANS);
-                        double error = AngleUnit.normalizeRadians(oppYaw - botAngle);
-
-                        rotationSpeed = (error / Math.PI) * rotationSpeedMult;
-                    }
-                }
-                // Were on red team
-                else
-                {
-                    AprilTagDetection red = aprilTagDetector.GetLastSeenRed();
-
-                    if(red != null)
-                    {
-                        double oppYaw = red.robotPose.getOrientation().getYaw(AngleUnit.RADIANS);
-                        double error = AngleUnit.normalizeRadians(oppYaw - botAngle);
-
-                        rotationSpeed = (error / Math.PI) * rotationSpeedMult;
-                    }
+                    rotationSpeed = (error / Math.PI)  * rotationSpeedMult;
                 }
             }
 
@@ -226,20 +210,22 @@ public class GPad
         else
         {
             pose = tag.ftcPose;
-            targetAngle = Math.atan2(pose.x, pose.y);
+            targetAngle = Math.atan2(pose.y, pose.x);
 
-            double power = targetAngle / ONE_RADIAN * rotationSpeedMult;
+            double error = AngleUnit.normalizeRadians(targetAngle - botAngle);
 
-            // if within 5% ignore.
-            if(targetAngle <= ONE_RADIAN * .05)
-            {   return;
+            double rotationSpeed = (error / Math.PI) * rotationSpeedMult;
+
+            // if within 1% ignore.
+            if(Math.abs(error) < Math.toRadians(2))
+            {   rotationSpeed = 0;
             }
 
             // turn Left
-            lf = power;
-            lb = power;
-            rf = -power;
-            rb = -power;
+            lf = rotationSpeed;
+            lb = rotationSpeed;
+            rf = -rotationSpeed;
+            rb = -rotationSpeed;
         }
 
 
@@ -373,15 +359,35 @@ public class GPad
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
 
+        // clamp
+        double max = Math.max(
+                Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
+                Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower)));
+
+        if(max > 1.0)
+        {
+            this.leftBackPower /= max;
+            this.leftFrontPower /= max;
+            this.rightFrontPower /= max;
+            this.rightBackPower /= max;
+        }
+
         // Apply motor timings
-        hub.drive.leftFront.setPower(this.leftFrontPower);
-        hub.drive.leftBack.setPower(this.leftBackPower);
-        hub.drive.rightFront.setPower(this.rightFrontPower);
-        hub.drive.rightBack.setPower(this.rightBackPower);
+        //hub.drive.leftFront.setPower(this.leftFrontPower);
+        //hub.drive.leftBack.setPower(this.leftBackPower);
+        //hub.drive.rightFront.setPower(this.rightFrontPower);
+        //hub.drive.rightBack.setPower(this.rightBackPower);
+
+        hub.telemetry.addData("LF", this.leftFrontPower);
+        hub.telemetry.addData("LB", this.leftBackPower);
+        hub.telemetry.addData("RF", this.rightFrontPower);
+        hub.telemetry.addData("RB", this.rightBackPower);
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
         this.rightFrontPower = 0;
         this.rightBackPower = 0;
+
+
     }
 }

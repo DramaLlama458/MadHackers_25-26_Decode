@@ -27,7 +27,7 @@ public class AutoLeave  extends LinearOpMode {
     ControlHub hub;
     @Override
     public void runOpMode() throws InterruptedException {
-        hub = new ControlHub(hardwareMap, null);
+        hub = new ControlHub(hardwareMap, null, telemetry);
 
 
         waitForStart();
