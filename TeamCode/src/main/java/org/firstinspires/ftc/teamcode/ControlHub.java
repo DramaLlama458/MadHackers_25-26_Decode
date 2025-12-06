@@ -47,7 +47,6 @@ public class ControlHub
         */
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
 
-
         conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
         //This is the code setup for the future motors and servos on the robot
         /*

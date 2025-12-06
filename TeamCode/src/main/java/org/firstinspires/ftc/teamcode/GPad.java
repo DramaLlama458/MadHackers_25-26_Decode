@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
+import org.openftc.apriltag.AprilTagPose;
 
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
@@ -13,13 +17,18 @@ public class GPad
     Map<String, Consumer<Boolean>> input = new HashMap<>();
     Gamepad gamepad;
     ControlHub hub;
+    Vision vision;
+    AprilTagDetector aprilTagDetector;
 
     public final int MAX_GEAR = 4;
     public final int MIN_GEAR = 1;
     private int gear = MIN_GEAR;
-
     private boolean leftBumperAlreadyPressed = false;
     private boolean rightBumperAlreadyPressed = false;
+    private double leftFrontPower = 0;
+    private double leftBackPower = 0;
+    private double rightFrontPower = 0;
+    private double rightBackPower = 0;
     DriveMode driveMode = DriveMode.RobotCentric;
 
     enum
@@ -30,7 +39,7 @@ public class GPad
     }
 
 
-    public GPad(ControlHub hb, Gamepad gmp)
+    public GPad(ControlHub hb, Gamepad gmp, Vision v)
     {
         input.put("x", this::ButtonX);
         input.put("a", this::ButtonA);
@@ -47,6 +56,7 @@ public class GPad
 
         gamepad = gmp;
         hub = hb;
+        vision = v;
     }
 
     public double scaleInput(double input) 
@@ -59,24 +69,18 @@ public class GPad
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis * 1.3);
 
-        double denominator;
-        double leftFrontPower = .0;
-        double leftBackPower = .0;
-        double rightFrontPower = .0;
-        double rightBackPower = .0;
+        double lf = 0;
+        double lb = 0;
+        double rf = 0;
+        double rb = 0;
 
         switch(this.driveMode)
         {
             case FieldCentric:
-                // Denominator is the largest motor power (absolute value) or 1
-                // This ensures all the powers maintain the same ratio,
-                // but only if at least one is out of the range [-1, 1]
-                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-                leftFrontPower = (y + x + rx) / denominator;
-                leftBackPower = (y - x + rx) / denominator;
-                rightFrontPower = (y - x - rx) / denominator;
-                rightBackPower = (y + x - rx) / denominator;
+                lf = (y + x + rx);
+                lb = (y - x + rx);
+                rf = (y - x - rx);
+                rb = (y + x - rx);
 
                 break;
             case RobotCentric:
@@ -84,23 +88,26 @@ public class GPad
                 double rotationX = x * Math.cos(-botAngle) - y * Math.sin(-botAngle);
                 double rotationY = x * Math.sin(-botAngle) + y * Math.cos(-botAngle);
 
-                denominator = Math.max(Math.abs(rotationY) + Math.abs(rotationX) + Math.abs(rx), 1);
-
-                leftFrontPower = (rotationY + rotationX + rx) / denominator;
-                leftBackPower = (rotationY - rotationX + rx) / denominator;
-                rightFrontPower = (rotationY - rotationX - rx) / denominator;
-                rightBackPower = (rotationY + rotationX - rx) / denominator;
+                lf = (rotationY + rotationX + rx);
+                lb = (rotationY - rotationX + rx);
+                rf = (rotationY - rotationX - rx);
+                rb = (rotationY + rotationX - rx);
 
                 break;
         }
 
-        double gearMultiplier = .25;
-        double wheelPowerMultiplier = 0.5 * (1 + (gear - 1) * gearMultiplier);
+        double gearMultiplier = .15;
+        double wheelPowerMultiplier = 0.6 * (1 + (gear - 1) * gearMultiplier);
 
-        hub.drive.leftFront.setPower(leftFrontPower * wheelPowerMultiplier);
-        hub.drive.rightFront.setPower(rightFrontPower * wheelPowerMultiplier);
-        hub.drive.leftBack.setPower(leftBackPower * wheelPowerMultiplier);
-        hub.drive.rightBack.setPower(rightBackPower * wheelPowerMultiplier);
+        lf *= wheelPowerMultiplier;
+        lb *= wheelPowerMultiplier;
+        rf *= wheelPowerMultiplier;
+        rb *= wheelPowerMultiplier;
+
+        this.leftFrontPower += lf;
+        this.leftBackPower += lb;
+        this.rightFrontPower += rf;
+        this.rightBackPower += rb;
     }
 
     public void ButtonX(boolean pressed)
@@ -128,39 +135,119 @@ public class GPad
     }
 
 
-    public void ButtonY(boolean pressed)
-    {
-        /*
+    public void ButtonY(boolean pressed) {
         if(!pressed)
         {
             driveMode = DriveMode.RobotCentric;
             return;
         }
 
+        // vision not installed...
+        if(vision == null)
+        {   return;
+        }
+
+        // Color hasn't initialized yet.
+        if(aprilTagDetector.GetTeamColor() == null)
+        {   return;
+        }
+
         driveMode = DriveMode.FieldCentric;
 
         // test maintain this angle.
         final double ONE_RADIAN = 2 * Math.PI;
+        final double rotationSpeedMult = .6;
+        double targetAngle;
+        double currentAngle;
+        AprilTagDetection tag = aprilTagDetector.GetTeam();
+        AprilTagPoseFtc pose = null;
+        AprilTagDetector.TeamColor teamColor = aprilTagDetector.GetTeamColor();
+        double lf = 0;
+        double lb = 0;
+        double rf = 0;
+        double rb = 0;
 
-        double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        // Are we in the line of sight?
+        if(tag == null)
+        {
+            AprilTagDetection lastSeenTeam = aprilTagDetector.GetLastSeenTeam();
+            Pose3D lastSeenRobotPose;
+            double lastSeenRotation = 0;
+            double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double rotationSpeed = 0;
 
-        // Test values for now.
-        double targetAngle = botAngle * 1.5;
+            if(lastSeenTeam != null)
+            {
+                lastSeenRobotPose = lastSeenTeam.robotPose;
 
-        // RotationSpeed Per Second.
-        double rotationSpeed = ONE_RADIAN * .15;
+                lastSeenRotation = lastSeenRobotPose.getOrientation().getYaw(AngleUnit.RADIANS);
+
+                double error = AngleUnit.normalizeRadians(lastSeenRotation - botAngle);
+
+                rotationSpeed = (error / Math.PI) * rotationSpeedMult;
+            }
+            else
+            {
+                // BASED ON OPPOSITE TEAM TAG DETECTION.
+                // Were on blue team
+                if(teamColor == AprilTagDetector.TeamColor.Red)
+                {
+                    AprilTagDetection blue = aprilTagDetector.GetLastSeenBlue();
+
+                    if(blue != null)
+                    {
+                        double oppYaw = blue.robotPose.getOrientation().getYaw(AngleUnit.RADIANS);
+                        double error = AngleUnit.normalizeRadians(oppYaw - botAngle);
+
+                        rotationSpeed = (error / Math.PI) * rotationSpeedMult;
+                    }
+                }
+                // Were on red team
+                else
+                {
+                    AprilTagDetection red = aprilTagDetector.GetLastSeenRed();
+
+                    if(red != null)
+                    {
+                        double oppYaw = red.robotPose.getOrientation().getYaw(AngleUnit.RADIANS);
+                        double error = AngleUnit.normalizeRadians(oppYaw - botAngle);
+
+                        rotationSpeed = (error / Math.PI) * rotationSpeedMult;
+                    }
+                }
+            }
 
 
-        // normalize radians.
-        targetAngle = normalizeRadians(targetAngle);
+            lf = rotationSpeed;
+            lb = rotationSpeed;
+            rf = -rotationSpeed;
+            rb = -rotationSpeed;
+        }
+        else
+        {
+            pose = tag.ftcPose;
+            targetAngle = Math.atan2(pose.x, pose.y);
+
+            double power = targetAngle / ONE_RADIAN * rotationSpeedMult;
+
+            // if within 5% ignore.
+            if(targetAngle <= ONE_RADIAN * .05)
+            {   return;
+            }
+
+            // turn Left
+            lf = power;
+            lb = power;
+            rf = -power;
+            rb = -power;
+        }
 
 
-        double leftFrontPower = ;
-        double rightFrontPower = ;
-        double leftBackPower = ;
-        double rightBackPower = ;
 
-        */
+        this.leftFrontPower += lf;
+        this.leftBackPower += lb;
+        this.rightFrontPower += rf;
+        this.rightBackPower += rb;
     }
 
     public void ButtonLeftBumper(boolean pressed)
@@ -174,7 +261,10 @@ public class GPad
 
         if(pressed)
         {
+            // lower  gear.
             gear = Math.max(gear - 1, MIN_GEAR);
+
+            gamepad.rumble(.1, .1, 150);
         }
     }
 
@@ -190,6 +280,8 @@ public class GPad
         if(pressed)
         {
             gear = Math.min(gear + 1, MAX_GEAR);
+
+            gamepad.rumble(.05, .25, 75);
         }
     }
 
@@ -200,7 +292,7 @@ public class GPad
         float multiplier = .6f;
         
         if(pressAmount >= DEADZONE_THRESHOLD)
-        {   conveyorPower = scaleInput(pressAmount);
+        {   conveyorPower = pressAmount;
         }
         
         hub.conveyorMotor.setPower(conveyorPower * multiplier);
@@ -208,6 +300,15 @@ public class GPad
 
     public void ButtonRightTrigger(float pressAmount)
     {
+        final float DEADZONE_THRESHOLD = 0.075f;
+        double conveyorPower = 0f;
+        float multiplier = .6f;
+
+        if(pressAmount >= DEADZONE_THRESHOLD)
+        {   conveyorPower = pressAmount;
+        }
+
+        hub.conveyorMotor.setPower(-conveyorPower * multiplier);
     }
 
     public void ButtonBack(boolean pressed)
@@ -270,5 +371,17 @@ public class GPad
         ButtonLeftTrigger(gamepad.left_trigger);
         ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
+
+
+        // Apply motor timings
+        hub.drive.leftFront.setPower(this.leftFrontPower);
+        hub.drive.leftBack.setPower(this.leftBackPower);
+        hub.drive.rightFront.setPower(this.rightFrontPower);
+        hub.drive.rightBack.setPower(this.rightBackPower);
+
+        this.leftFrontPower = 0;
+        this.leftBackPower = 0;
+        this.rightFrontPower = 0;
+        this.rightBackPower = 0;
     }
 }

@@ -25,7 +25,7 @@ public class TeleOpMain extends LinearOpMode  {
     public void runOpMode() throws InterruptedException
     {
         hub = new ControlHub(hardwareMap, null);
-        gpad = new GPad(hub, gamepad1);
+        gpad = new GPad(hub, gamepad1, null);
 
         waitForStart();
 
