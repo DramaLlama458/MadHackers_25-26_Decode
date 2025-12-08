@@ -25,7 +25,7 @@ public class TeleOpMain extends LinearOpMode  {
     public void runOpMode() throws InterruptedException
     {
         hub = new ControlHub(hardwareMap, null, telemetry);
-        gpad = new GPad(hub, gamepad1, null);
+        gpad = new GPad(hub, gamepad1);
 
         waitForStart();
 
@@ -35,7 +35,9 @@ public class TeleOpMain extends LinearOpMode  {
 
         while (opModeIsActive())
         {
+            hub.detector.Update();
             gpad.HandleInput();
+            updateTelemetry(telemetry);
             dash.sendTelemetryPacket(new TelemetryPacket());
         }
     }

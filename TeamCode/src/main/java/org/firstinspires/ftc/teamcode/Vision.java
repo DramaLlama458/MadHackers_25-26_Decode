@@ -2,33 +2,43 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Size;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.VisionProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class Vision
 {
-    Camera cam;
-    VisionPortal visionPortal;
+    private VisionPortal visionPortal;
+    private AprilTagProcessor processor;
     final static Size resolution = new Size(640, 480);
 
-    public Vision(Camera camera)
+    public Vision(CameraName web)
     {
-        cam = camera;
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(cam.getCameraName())
-                .setCameraResolution(resolution)
-                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // TODO: Test Other Stream format.
+        this.processor = new AprilTagProcessor.Builder()
+                .setDrawAxes(FTCDebug.IS_DEBUG_MODE)
+                .setDrawCubeProjection(FTCDebug.IS_DEBUG_MODE)
+                .setDrawTagID(FTCDebug.IS_DEBUG_MODE)
+                .setDrawTagOutline(FTCDebug.IS_DEBUG_MODE)
+                .setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS)
                 .build();
 
-        visionPortal.resumeStreaming();
-    }
+        this.visionPortal = new VisionPortal.Builder()
+                .setCamera(web)
+                .setCameraResolution(resolution)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // TODO: Test Other Stream format.
+                .addProcessor(this.processor)
+                .build();
 
-    public Camera GetCamera()
-    {   return cam;
+        this.visionPortal.setProcessorEnabled(this.processor, true);
     }
 
     public VisionPortal GetPortal()
-    {   return visionPortal;
+    {   return this.visionPortal;
+    }
+
+    public AprilTagProcessor GetProcessor()
+    {   return this.processor;
     }
 }

@@ -40,9 +40,6 @@ public class AprilTagDetector
     private AprilTagDetection lastSeenMotif = null;
     private Color []motifOrder = null;
     private TeamColor teamColor = null;
-    private Thread mainThread = null;
-    // Would do read write lock but I dont think it should be that big of a problem.
-    private ReentrantLock mutex = new ReentrantLock();
 
     public enum TeamColor
     {
@@ -58,146 +55,112 @@ public class AprilTagDetector
 
     public AprilTagDetector(Vision _v) {
         this.vision = _v;
-
-        this.tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(FTCDebug.IS_DEBUG_MODE)
-                .setDrawCubeProjection(FTCDebug.IS_DEBUG_MODE)
-                .setDrawTagID(FTCDebug.IS_DEBUG_MODE)
-                .setDrawTagOutline(FTCDebug.IS_DEBUG_MODE)
-                .build();
-
-        // Attach to camera
-        this.vision.GetPortal().setProcessorEnabled(this.tagProcessor, true);
-
         // start streaming if not streaming already.
         if(this.vision.GetPortal().getCameraState() != STREAMING)
-        {   this.vision.GetPortal().resumeStreaming();
+        {
+            this.vision.GetPortal().resumeStreaming();
+            this.vision.GetPortal().resumeLiveView();
         }
-
-        // Init thread.
-
-        this.mainThread = new Thread(this::MotifThread);
-
-        this.mainThread.start();
     }
 
-    private void MotifThread() {
-        while (true)
+    public void Update()
+    {
+        if(this.vision.GetPortal().getCameraState() != STREAMING)
         {
-            // wait.
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                // Do nothing.
+            this.vision.GetPortal().resumeStreaming();
+            return;
+        }
+        ArrayList<AprilTagDetection> tags;
+
+        final int blueTag = 20;
+        final int motif1 = 21;
+        final int motif2 = 22;
+        final int motif3 = 23;
+        final int redTag = 24;
+
+        tags = this.tagProcessor.getDetections();
+
+        // setup LastSeen
+        if(this.red != null)
+        {   this.lastSeenRed = this.red;
+        }
+        if(this.blue != null)
+        {   this.lastSeenBlue = this.blue;
+        }
+        if(this.motif != null)
+        {   this.lastSeenMotif = this.motif;
+        }
+
+        // Is this the first time?
+        if(this.teamColor == null)
+        {
+            // Assume closest is team color.
+            if(this.lastSeenRed != null && this.lastSeenBlue != null)
+            {
+                AprilTagPoseFtc redPose = this.lastSeenRed.ftcPose;
+                AprilTagPoseFtc bluePose = this.lastSeenBlue.ftcPose;
+
+                double redDistance = Math.sqrt(redPose.x * redPose.x + redPose.y * redPose.y + redPose.z * redPose.z);
+                double blueDistance = Math.sqrt(bluePose.x * bluePose.x + bluePose.y * bluePose.y + bluePose.z * bluePose.z);
+
+                if(redDistance > blueDistance)
+                {   this.teamColor = TeamColor.Red;
+                }
+                else
+                {   this.teamColor = TeamColor.Blue;
+                }
+            }
+            else if(this.lastSeenRed != null)
+            {   this.teamColor = TeamColor.Red;
+            }
+            else if(this.lastSeenBlue != null)
+            {   this.teamColor = TeamColor.Blue;
+            }
+        }
+
+        this.motif = null;
+        this.red = null;
+        this.blue = null;
+
+        for (AprilTagDetection tag : tags)
+        {
+            final float MIN_MARGIN = .90f;
+            float marginOfError =  tag.decisionMargin;
+
+            if (marginOfError < MIN_MARGIN)
+            {   continue;
             }
 
-            while (this.vision.GetPortal().getCameraState() == STREAMING)
+            switch(tag.id)
             {
-                ArrayList<AprilTagDetection> tags;
+                case blueTag:
+                    this.blue = tag;
+                    break;
+                case redTag:
+                    this.red = tag;
+                    break;
+                case motif1:
+                case motif2:
+                case motif3:
+                    this.motif = tag;
+                    break;
+            }
+        }
 
-                final int blueTag = 20;
-                final int motif1 = 21;
-                final int motif2 = 22;
-                final int motif3 = 23;
-                final int redTag = 24;
-
-                this.mutex.lock();
-
-                tags = this.tagProcessor.getDetections();
-
-                // setup LastSeen
-                if(this.red != null)
-                {   this.lastSeenRed = this.red;
-                }
-                if(this.blue != null)
-                {   this.lastSeenBlue = this.blue;
-                }
-                if(this.motif != null)
-                {   this.lastSeenMotif = this.motif;
-                }
-
-                // Is this the first time?
-                if(this.teamColor == null)
-                {
-                    // Assume closest is team color.
-                    if(this.lastSeenRed != null && this.lastSeenBlue != null)
-                    {
-                        AprilTagPoseFtc redPose = this.lastSeenRed.ftcPose;
-                        AprilTagPoseFtc bluePose = this.lastSeenBlue.ftcPose;
-
-                        double redDistance = Math.sqrt(redPose.x * redPose.x + redPose.y * redPose.y + redPose.z * redPose.z);
-                        double blueDistance = Math.sqrt(bluePose.x * bluePose.x + bluePose.y * bluePose.y + bluePose.z * bluePose.z);
-
-                        if(redDistance > blueDistance)
-                        {   this.teamColor = TeamColor.Red;
-                        }
-                        else
-                        {   this.teamColor = TeamColor.Blue;
-                        }
-                    }
-                    else if(this.lastSeenRed != null)
-                    {   this.teamColor = TeamColor.Red;
-                    }
-                    else if(this.lastSeenBlue != null)
-                    {   this.teamColor = TeamColor.Blue;
-                    }
-                }
-
-                this.motif = null;
-                this.red = null;
-                this.blue = null;
-
-                for (AprilTagDetection tag : tags)
-                {
-                    final float MAX_MARGIN_OF_ERROR = .10f;
-                    float marginOfError = 1 - tag.decisionMargin;
-
-                    if (marginOfError < MAX_MARGIN_OF_ERROR)
-                    {   continue;
-                    }
-
-                    switch(tag.id)
-                    {
-                        case blueTag:
-                            this.blue = tag;
-                            break;
-                        case redTag:
-                            this.red = tag;
-                            break;
-                        case motif1:
-                        case motif2:
-                        case motif3:
-                            this.motif = tag;
-                            break;
-                    }
-                }
-
-                // update motif patter if found.
-                if(this.motif != null && this.motifOrder == null)
-                {
-                    switch(this.motif.id)
-                    {
-                        case motif1:
-                            this.motifOrder = new Color[]{ Color.Green, Color.Purple, Color.Purple };
-                            break;
-                        case motif2:
-                            this.motifOrder = new Color[]{ Color.Purple, Color.Green, Color.Purple };
-                            break;
-                        case motif3:
-                            this.motifOrder = new Color[] { Color.Purple, Color.Purple, Color.Green };
-                            break;
-                    }
-                }
-
-                this.mutex.unlock();
-
-                long milliseconds = Math.round(1000f / this.vision.GetPortal().getFps());
-
-                try {
-                    Thread.sleep(milliseconds);
-                } catch (InterruptedException e) {
-                    // Do nothing.
-                }
+        // update motif patter if found.
+        if(this.motif != null && this.motifOrder == null)
+        {
+            switch(this.motif.id)
+            {
+                case motif1:
+                    this.motifOrder = new Color[]{ Color.Green, Color.Purple, Color.Purple };
+                    break;
+                case motif2:
+                    this.motifOrder = new Color[]{ Color.Purple, Color.Green, Color.Purple };
+                    break;
+                case motif3:
+                    this.motifOrder = new Color[] { Color.Purple, Color.Purple, Color.Green };
+                    break;
             }
         }
     }
@@ -206,9 +169,7 @@ public class AprilTagDetector
     {
         AprilTagDetection m = null;
 
-        this.mutex.lock();
         m = this.motif;
-        this.mutex.unlock();
 
         return m;
     }
@@ -217,9 +178,7 @@ public class AprilTagDetector
     {
         AprilTagDetection r = null;
 
-        this.mutex.lock();
         r = this.red;
-        this.mutex.unlock();
 
         return r;
     }
@@ -228,9 +187,7 @@ public class AprilTagDetector
     {
         AprilTagDetection r = null;
 
-        this.mutex.lock();
         r = this.lastSeenRed;
-        this.mutex.unlock();
 
         return r;
     }
@@ -239,9 +196,7 @@ public class AprilTagDetector
     {
         AprilTagDetection b = null;
 
-        this.mutex.lock();
         b = this.blue;
-        this.mutex.unlock();
 
         return b;
     }
@@ -250,13 +205,23 @@ public class AprilTagDetector
     {
         AprilTagDetection b = null;
 
-        this.mutex.lock();
         b = this.lastSeenBlue;
-        this.mutex.unlock();
 
         return b;
     }
 
+    public void SwitchTeam()
+    {
+        switch(this.teamColor)
+        {
+            case Red:
+                this.teamColor = TeamColor.Blue;
+                break;
+            case Blue:
+                this.teamColor = TeamColor.Red;
+                break;
+        }
+    }
     public AprilTagDetection GetTeam()
     {
         TeamColor col = this.GetTeamColor();
@@ -303,9 +268,7 @@ public class AprilTagDetector
     {
         Color[] col = null;
 
-        this.mutex.lock();
         col = this.motifOrder;
-        this.mutex.unlock();
 
         return col;
     }
@@ -314,9 +277,7 @@ public class AprilTagDetector
     {
         TeamColor col = null;
 
-        this.mutex.lock();
         col = this.teamColor;
-        this.mutex.unlock();
 
         return col;
     }

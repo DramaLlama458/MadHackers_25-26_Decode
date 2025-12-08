@@ -39,24 +39,13 @@ public class GPad
     }
 
 
-    public GPad(ControlHub hb, Gamepad gmp, Vision v)
+    public GPad(ControlHub hb, Gamepad gmp)
     {
-        input.put("x", this::ButtonX);
-        input.put("a", this::ButtonA);
-        input.put("b", this::ButtonB);
-        input.put("y", this::ButtonY);
-        input.put("left_bumper", this::ButtonLeftBumper);
-        input.put("right_bumper", this::ButtonRightBumper);
-        input.put("back", this::ButtonBack);
-        input.put("start", this::ButtonStart);
-        input.put("dpad_up", this::DpadUp);
-        input.put("dpad_down", this::DpadDown);
-        input.put("dpad_left", this::DpadLeft);
-        input.put("dpad_right", this::DpadRight);
-
         gamepad = gmp;
         hub = hb;
-        vision = v;
+        vision = hb.vision;
+
+        aprilTagDetector = hub.detector;
     }
 
     public double scaleInput(double input) 
@@ -68,6 +57,11 @@ public class GPad
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis * 1.3);
+
+        // boost rx if moving + turning.
+        if(Math.abs(y) > 0.05)
+        {   rx += Math.abs(y) * .3;
+        }
 
         double lf = 0;
         double lb = 0;
@@ -155,12 +149,10 @@ public class GPad
         driveMode = DriveMode.FieldCentric;
 
         // test maintain this angle.
-        final double ONE_RADIAN = 2 * Math.PI;
-        final double rotationSpeedMult = .6;
+        final double rotationSpeedMult = 0.6;
         double targetAngle;
-        double currentAngle;
         double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        AprilTagDetection tag = aprilTagDetector.GetTeam();
+        AprilTagDetection teamTag = aprilTagDetector.GetTeam();
         AprilTagPoseFtc pose = null;
         AprilTagDetector.TeamColor teamColor = aprilTagDetector.GetTeamColor();
         double lf = 0;
@@ -169,7 +161,7 @@ public class GPad
         double rb = 0;
 
         // Are we in the line of sight?
-        if(tag == null)
+        if(teamTag == null)
         {
             AprilTagDetection lastSeenTeam = aprilTagDetector.GetLastSeenTeam();
             Pose3D lastSeenRobotPose;
@@ -201,7 +193,6 @@ public class GPad
                 }
             }
 
-
             lf = rotationSpeed;
             lb = rotationSpeed;
             rf = -rotationSpeed;
@@ -209,14 +200,14 @@ public class GPad
         }
         else
         {
-            pose = tag.ftcPose;
+            pose = teamTag.ftcPose;
             targetAngle = Math.atan2(pose.y, pose.x);
 
             double error = AngleUnit.normalizeRadians(targetAngle - botAngle);
 
             double rotationSpeed = (error / Math.PI) * rotationSpeedMult;
 
-            // if within 1% ignore.
+            // if within 2% ignore.
             if(Math.abs(error) < Math.toRadians(2))
             {   rotationSpeed = 0;
             }
@@ -227,8 +218,6 @@ public class GPad
             rf = -rotationSpeed;
             rb = -rotationSpeed;
         }
-
-
 
         this.leftFrontPower += lf;
         this.leftBackPower += lb;
@@ -281,7 +270,7 @@ public class GPad
         {   conveyorPower = pressAmount;
         }
         
-        hub.conveyorMotor.setPower(conveyorPower * multiplier);
+        //hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonRightTrigger(float pressAmount)
@@ -294,7 +283,7 @@ public class GPad
         {   conveyorPower = pressAmount;
         }
 
-        hub.conveyorMotor.setPower(-conveyorPower * multiplier);
+        //hub.conveyorMotor.setPower(-conveyorPower * multiplier);
     }
 
     public void ButtonBack(boolean pressed)
@@ -331,33 +320,21 @@ public class GPad
 
     public void HandleInput()
     {
-        Class<?> _class = gamepad.getClass();
-        Consumer<Boolean> func;
-        String key;
-        Field field;
-        Boolean value;
-
-        for (Map.Entry<String, Consumer<Boolean>> i : input.entrySet())
-        {
-            try
-            {
-                key = i.getKey();
-                func = i.getValue();
-
-                field = _class.getDeclaredField(key);
-                value = (Boolean)field.get(gamepad);
-
-                func.accept(value);
-            }
-            catch (Exception e)
-            {   // If its not there??? Then we don't need to do anything.
-            }
-        }
-
+        ButtonX(gamepad.x);
+        ButtonA(gamepad.a);
+        ButtonB(gamepad.b);
+        ButtonY(gamepad.y);
+        ButtonLeftBumper(gamepad.left_bumper);
+        ButtonRightBumper(gamepad.right_bumper);
+        ButtonBack(gamepad.back);
+        ButtonStart(gamepad.start);
+        DpadUp(gamepad.dpad_up);
+        DpadDown(gamepad.dpad_down);
+        DpadLeft(gamepad.dpad_left);
+        DpadRight(gamepad.dpad_right);
         ButtonLeftTrigger(gamepad.left_trigger);
         ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
-
 
         // clamp
         double max = Math.max(
@@ -378,10 +355,13 @@ public class GPad
         //hub.drive.rightFront.setPower(this.rightFrontPower);
         //hub.drive.rightBack.setPower(this.rightBackPower);
 
+        hub.telemetry.addData("Detection", this.aprilTagDetector.GetTeam() != null);
+        hub.telemetry.addData("Test", this.vision.GetPortal().getCameraState());
         hub.telemetry.addData("LF", this.leftFrontPower);
         hub.telemetry.addData("LB", this.leftBackPower);
         hub.telemetry.addData("RF", this.rightFrontPower);
         hub.telemetry.addData("RB", this.rightBackPower);
+
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
