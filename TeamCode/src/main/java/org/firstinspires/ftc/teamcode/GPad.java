@@ -354,12 +354,9 @@ public class GPad
         //hub.drive.rightFront.setPower(this.rightFrontPower);
         //hub.drive.rightBack.setPower(this.rightBackPower);
 
-        hub.telemetry.addData("Detection", this.aprilTagDetector.GetTeam());
-        hub.telemetry.addData("Camera State:", this.vision.GetPortal().getCameraState());
-        hub.telemetry.addData("LF", this.leftFrontPower);
-        hub.telemetry.addData("LB", this.leftBackPower);
-        hub.telemetry.addData("RF", this.rightFrontPower);
-        hub.telemetry.addData("RB", this.rightBackPower);
+        hub.telemetry.addData("Team", this.aprilTagDetector.GetTeam());
+        hub.telemetry.addData("Camera State", this.vision.GetPortal().getCameraState());
+        hub.telemetry.addData("Movement Vector", String.format("(lf: %f, lb: %f, rf: %f, rb: %f)", this.leftFrontPower, this.leftBackPower, this.rightFrontPower, this.rightBackPower));
         hub.telemetry.addData("Heading", FTCDebug.GetRobotMovementDirection(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Heading Degree", FTCDebug.GetRobotMovementAngle(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Test", this.hub.vision.GetProcessor().getDetections());
