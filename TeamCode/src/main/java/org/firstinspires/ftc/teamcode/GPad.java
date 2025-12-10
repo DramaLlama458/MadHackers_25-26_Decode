@@ -385,7 +385,7 @@ public class GPad
         hub.telemetry.addData("LB", this.leftBackPower);
         hub.telemetry.addData("RF", this.rightFrontPower);
         hub.telemetry.addData("RB", this.rightBackPower);
-
+        hub.telemetry.addData("Test", this.hub.vision.GetProcessor().getDetections());
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
