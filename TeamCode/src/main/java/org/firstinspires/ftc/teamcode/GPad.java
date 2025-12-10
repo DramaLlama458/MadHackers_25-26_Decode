@@ -332,26 +332,10 @@ public class GPad
         DpadDown(gamepad.dpad_down);
         DpadLeft(gamepad.dpad_left);
         DpadRight(gamepad.dpad_right);
-        //ButtonLeftTrigger(gamepad.left_trigger);
-        //ButtonRightTrigger(gamepad.right_trigger);
-        double conveyorPower = 0;
-        if(gamepad.left_trigger>=0.1){
-            conveyorPower = gamepad.left_trigger/5;
-        }
-        if(gamepad.right_trigger>=0.1){
-            conveyorPower = -gamepad.right_trigger/5;
-        }
-        if(gamepad.left_trigger<0.1 && gamepad.right_trigger<0.1){
-            conveyorPower = 0;
-        }
-
-
-
-        //hub.conveyorMotor.setPower(conveyorPower);
-
+        ButtonLeftTrigger(gamepad.left_trigger);
+        ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
-        // clamp
         double max = Math.max(
                 Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
                 Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower)));
