@@ -45,10 +45,10 @@ public class ControlHub
             initialPose = new Pose2d(0, 0, Math.toRadians(0));
         }
         // Initial pose is just so hub can be used for autonomous
+
         /*
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
          */
 
         vision = new Vision(map.get(WebcamName.class, "Webcam 1"));

@@ -17,7 +17,6 @@ public class FTCDebug
 {
     final static boolean IS_DEBUG_MODE = true;
 
-    // move all this to uh Gpad or something, just here cause dont wan to mess up current code.
     public enum CompassDirection
     {
         North,

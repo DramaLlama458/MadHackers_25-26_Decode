@@ -289,7 +289,6 @@ public class GPad
 
     public void ButtonBack(boolean pressed)
     {
-
     }
 
     public void ButtonStart(boolean pressed)
@@ -334,26 +333,10 @@ public class GPad
         DpadDown(gamepad.dpad_down);
         DpadLeft(gamepad.dpad_left);
         DpadRight(gamepad.dpad_right);
-        //ButtonLeftTrigger(gamepad.left_trigger);
-        //ButtonRightTrigger(gamepad.right_trigger);
-        double conveyorPower = 0;
-        if(gamepad.left_trigger>=0.1){
-            conveyorPower = gamepad.left_trigger/5;
-        }
-        if(gamepad.right_trigger>=0.1){
-            conveyorPower = -gamepad.right_trigger/5;
-        }
-        if(gamepad.left_trigger<0.1 && gamepad.right_trigger<0.1){
-            conveyorPower = 0;
-        }
-
-
-
-        //hub.conveyorMotor.setPower(conveyorPower);
-
+        ButtonLeftTrigger(gamepad.left_trigger);
+        ButtonRightTrigger(gamepad.right_trigger);
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
-        // clamp
         double max = Math.max(
                 Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
                 Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower)));
@@ -372,19 +355,16 @@ public class GPad
         //hub.drive.rightFront.setPower(this.rightFrontPower);
         //hub.drive.rightBack.setPower(this.rightBackPower);
 
-        hub.telemetry.addData("Detection", this.aprilTagDetector.GetTeam() != null);
-        hub.telemetry.addData("Test", this.vision.GetPortal().getCameraState());
-        hub.telemetry.addData("LF", this.leftFrontPower);
-        hub.telemetry.addData("LB", this.leftBackPower);
-        hub.telemetry.addData("RF", this.rightFrontPower);
-        hub.telemetry.addData("RB", this.rightBackPower);
-        hub.telemetry.addData("Test", hub.vision.GetProcessor().getDetections());
+        hub.telemetry.addData("Team", this.aprilTagDetector.GetTeam());
+        hub.telemetry.addData("Camera State", this.vision.GetPortal().getCameraState());
+        hub.telemetry.addData("Movement Vector", String.format("(lf: %f, lb: %f, rf: %f, rb: %f)", this.leftFrontPower, this.leftBackPower, this.rightFrontPower, this.rightBackPower));
+        hub.telemetry.addData("Heading", FTCDebug.GetRobotMovementDirection(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
+        hub.telemetry.addData("Heading Degree", FTCDebug.GetRobotMovementAngle(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
+        hub.telemetry.addData("Test", this.hub.vision.GetProcessor().getDetections());
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
         this.rightFrontPower = 0;
         this.rightBackPower = 0;
-
-
     }
 }
