@@ -288,15 +288,6 @@ public class GPad
 
     public void ButtonBack(boolean pressed)
     {
-        final float DEADZONE_THRESHOLD = 0.075f;
-        double conveyorPower = 0f;
-        float multiplier = .4f;
-
-        if(pressAmount >= DEADZONE_THRESHOLD)
-        {   conveyorPower = -1;
-        }
-
-        hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonStart(boolean pressed)
@@ -356,7 +347,7 @@ public class GPad
 
 
 
-        hub.conveyorMotor.setPower(conveyorPower);
+        //hub.conveyorMotor.setPower(conveyorPower);
 
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
@@ -379,19 +370,19 @@ public class GPad
         //hub.drive.rightFront.setPower(this.rightFrontPower);
         //hub.drive.rightBack.setPower(this.rightBackPower);
 
-        hub.telemetry.addData("Detection", this.aprilTagDetector.GetTeam() != null);
-        hub.telemetry.addData("Test", this.vision.GetPortal().getCameraState());
+        hub.telemetry.addData("Detection", this.aprilTagDetector.GetTeam());
+        hub.telemetry.addData("Camera State:", this.vision.GetPortal().getCameraState());
         hub.telemetry.addData("LF", this.leftFrontPower);
         hub.telemetry.addData("LB", this.leftBackPower);
         hub.telemetry.addData("RF", this.rightFrontPower);
         hub.telemetry.addData("RB", this.rightBackPower);
+        hub.telemetry.addData("Heading", FTCDebug.GetRobotMovementDirection(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
+        hub.telemetry.addData("Heading Degree", FTCDebug.GetRobotMovementAngle(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Test", this.hub.vision.GetProcessor().getDetections());
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
         this.rightFrontPower = 0;
         this.rightBackPower = 0;
-
-
     }
 }

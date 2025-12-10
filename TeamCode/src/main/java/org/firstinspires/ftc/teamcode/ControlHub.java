@@ -46,6 +46,11 @@ public class ControlHub
         }
         // Initial pose is just so hub can be used for autonomous
 
+        /*
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+         */
+
         vision = new Vision(map.get(WebcamName.class, "Webcam 1"));
         detector = new AprilTagDetector(vision);
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
