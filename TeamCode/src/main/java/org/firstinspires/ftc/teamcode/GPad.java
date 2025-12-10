@@ -71,13 +71,6 @@ public class GPad
         switch(this.driveMode)
         {
             case FieldCentric:
-                lf = (y + x + rx);
-                lb = (y - x + rx);
-                rf = (y - x - rx);
-                rb = (y + x - rx);
-
-                break;
-            case RobotCentric:
                 double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
                 double rotationX = x * Math.cos(-botAngle) - y * Math.sin(-botAngle);
                 double rotationY = x * Math.sin(-botAngle) + y * Math.cos(-botAngle);
@@ -86,6 +79,14 @@ public class GPad
                 lb = (rotationY - rotationX + rx);
                 rf = (rotationY - rotationX - rx);
                 rb = (rotationY + rotationX - rx);
+
+                break;
+            case RobotCentric:
+                lf = (y + x + rx);
+                lb = (y - x + rx);
+                rf = (y - x - rx);
+                rb = (y + x - rx);
+
 
                 break;
         }
