@@ -31,6 +31,8 @@ public class GPad
     private double rightBackPower = 0;
     DriveMode driveMode = DriveMode.RobotCentric;
 
+    static boolean buttonYWasPressed = false;
+
     enum
     DriveMode
     {
@@ -48,10 +50,10 @@ public class GPad
         aprilTagDetector = hub.detector;
     }
 
-    public double scaleInput(double input) 
+    public double scaleInput(double input)
     {    return input * input * input * 0.8 + input * 0.2;
     }
-    
+
     public void Joystick(float l_xAxis, float l_yAxis, float r_xAxis, float r_yAxis)
     {
         double y = scaleInput(-l_yAxis); // Remember, Y stick value is reversed
@@ -130,6 +132,25 @@ public class GPad
 
 
     public void ButtonY(boolean pressed) {
+        if(this.buttonYWasPressed && pressed)
+        {   return;
+        }
+
+        this.buttonYWasPressed = pressed;
+
+        if(!pressed)
+        {   return;
+        }
+
+        switch(this.driveMode) {
+            case FieldCentric:
+                this.driveMode = DriveMode.RobotCentric;
+                return;
+            case RobotCentric:
+                this.driveMode = DriveMode.FieldCentric;
+                return;
+        }
+
         if(!pressed)
         {
             driveMode = DriveMode.RobotCentric;
