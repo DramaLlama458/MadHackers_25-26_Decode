@@ -61,6 +61,7 @@ public class AprilTagDetector
             this.vision.GetPortal().resumeStreaming();
             this.vision.GetPortal().resumeLiveView();
         }
+        this.tagProcessor = this.vision.GetProcessor();
     }
 
     public void Update()

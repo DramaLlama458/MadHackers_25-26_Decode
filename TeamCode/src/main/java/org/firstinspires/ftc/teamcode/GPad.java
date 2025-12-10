@@ -288,15 +288,7 @@ public class GPad
 
     public void ButtonBack(boolean pressed)
     {
-        final float DEADZONE_THRESHOLD = 0.075f;
-        double conveyorPower = 0f;
-        float multiplier = .4f;
 
-        if(pressAmount >= DEADZONE_THRESHOLD)
-        {   conveyorPower = -1;
-        }
-
-        hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonStart(boolean pressed)
@@ -356,7 +348,7 @@ public class GPad
 
 
 
-        hub.conveyorMotor.setPower(conveyorPower);
+        //hub.conveyorMotor.setPower(conveyorPower);
 
         Joystick(gamepad.left_stick_x, gamepad.left_stick_y, gamepad.right_stick_x, gamepad.right_stick_y);
 
@@ -385,7 +377,7 @@ public class GPad
         hub.telemetry.addData("LB", this.leftBackPower);
         hub.telemetry.addData("RF", this.rightFrontPower);
         hub.telemetry.addData("RB", this.rightBackPower);
-
+        hub.telemetry.addData("Test", hub.vision.GetProcessor().getDetections());
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
