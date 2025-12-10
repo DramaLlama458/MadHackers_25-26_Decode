@@ -32,10 +32,10 @@ public class DriveTrainTest extends LinearOpMode {
             wheelMovement();
 
             if(gamepad1.left_trigger>=0.1){
-                conveyorPower = gamepad1.left_trigger/6;
+                conveyorPower = gamepad1.left_trigger/5;
             }
             if(gamepad1.right_trigger>=0.1){
-                conveyorPower = -gamepad1.right_trigger/6;
+                conveyorPower = -gamepad1.right_trigger/5;
             }
             if(gamepad1.left_trigger<0.1 && gamepad1.right_trigger<0.1){
                 conveyorPower = 0;
@@ -103,10 +103,10 @@ public class DriveTrainTest extends LinearOpMode {
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.drive.leftFront.setPower(leftFrontPower*.75);
-        hub.drive.rightFront.setPower(rightFrontPower*.75);
-        hub.drive.leftBack.setPower(leftBackPower*.75);
-        hub.drive.rightBack.setPower(rightBackPower*.75);
+        hub.drive.leftFront.setPower(leftFrontPower*.70);
+        hub.drive.rightFront.setPower(rightFrontPower*.70);
+        hub.drive.leftBack.setPower(leftBackPower*.70);
+        hub.drive.rightBack.setPower(rightBackPower*.70);
 
         telemetry.addData("X",x);
         telemetry.addData("Y",y);
