@@ -31,7 +31,7 @@ public class GPad
     private double rightBackPower = 0;
     DriveMode driveMode = DriveMode.RobotCentric;
 
-    static boolean buttonYWasPressed = false;
+    boolean buttonYWasPressed = false;
 
     enum
     DriveMode
