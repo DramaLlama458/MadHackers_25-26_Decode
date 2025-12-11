@@ -18,14 +18,9 @@ import org.firstinspires.ftc.robotcore.internal.camera.names.WebcamNameImpl;
 public class ControlHub
 {
     MecanumDrive drive;
-    public IMU imu;
-    public DcMotor leftFront;
-    public DcMotor rightFront;
-    public DcMotor leftBack;
-    public DcMotor rightBack;
 
 
-    public DcMotor conveyorMotor;
+    //public DcMotor conveyorMotor;
     public Telemetry telemetry;
     public Vision vision;
     public AprilTagDetector detector;
