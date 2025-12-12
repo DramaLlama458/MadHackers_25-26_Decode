@@ -60,11 +60,6 @@ public class GPad
         double x = scaleInput(l_xAxis) * 1.1; // Counteract imperfect strafing
         double rx = scaleInput(r_xAxis * 1.3);
 
-        // boost rx if moving + turning.
-        if(Math.abs(y) > 0.05)
-        {   rx += Math.abs(y) * .3;
-        }
-
         double lf = 0;
         double lb = 0;
         double rf = 0;
@@ -73,7 +68,8 @@ public class GPad
         switch(this.driveMode)
         {
             case FieldCentric:
-                double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+                double botAngle = hub.drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
                 double rotationX = x * Math.cos(-botAngle) - y * Math.sin(-botAngle);
                 double rotationY = x * Math.sin(-botAngle) + y * Math.cos(-botAngle);
 
@@ -84,6 +80,11 @@ public class GPad
 
                 break;
             case RobotCentric:
+                // boost rx if moving + turning.
+                final double MIN_BUMP_UP = .45;
+                if(Math.abs(y) > MIN_BUMP_UP && Math.abs(rx) > MIN_BUMP_UP)
+                {   rx += Math.abs(y) * .20;
+                }
                 lf = (y + x + rx);
                 lb = (y - x + rx);
                 rf = (y - x - rx);
@@ -93,8 +94,8 @@ public class GPad
                 break;
         }
 
-        double gearMultiplier = .15;
-        double wheelPowerMultiplier = 0.6 * (1 + (gear - 1) * gearMultiplier);
+        double gearMultiplier = .25;
+        double wheelPowerMultiplier = 0.45 * (1 + (gear - 1) * gearMultiplier);
 
         lf *= wheelPowerMultiplier;
         lb *= wheelPowerMultiplier;
@@ -146,6 +147,7 @@ public class GPad
         switch(this.driveMode) {
             case FieldCentric:
                 this.driveMode = DriveMode.RobotCentric;
+                hub.drive.lazyImu.get().resetYaw();
                 return;
             case RobotCentric:
                 this.driveMode = DriveMode.FieldCentric;
@@ -169,6 +171,8 @@ public class GPad
         }
 
         driveMode = DriveMode.FieldCentric;
+        // reset yaw calculations should account for most inacurracies
+        hub.drive.lazyImu.get().resetYaw();
 
         // test maintain this angle.
         final double rotationSpeedMult = 0.6;
@@ -177,6 +181,7 @@ public class GPad
         AprilTagDetection teamTag = aprilTagDetector.GetTeam();
         AprilTagPoseFtc pose = null;
         AprilTagDetector.TeamColor teamColor = aprilTagDetector.GetTeamColor();
+
         double lf = 0;
         double lb = 0;
         double rf = 0;
@@ -371,10 +376,10 @@ public class GPad
         }
 
         // Apply motor timings
-        //hub.drive.leftFront.setPower(this.leftFrontPower);
-        //hub.drive.leftBack.setPower(this.leftBackPower);
-        //hub.drive.rightFront.setPower(this.rightFrontPower);
-        //hub.drive.rightBack.setPower(this.rightBackPower);
+        hub.drive.leftFront.setPower(this.leftFrontPower);
+        hub.drive.leftBack.setPower(this.leftBackPower);
+        hub.drive.rightFront.setPower(this.rightFrontPower);
+        hub.drive.rightBack.setPower(this.rightBackPower);
 
         hub.telemetry.addData("Team", this.aprilTagDetector.GetTeam());
         hub.telemetry.addData("Camera State", this.vision.GetPortal().getCameraState());

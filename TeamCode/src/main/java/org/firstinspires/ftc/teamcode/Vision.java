@@ -16,6 +16,13 @@ public class Vision
 
     public Vision(CameraName web)
     {
+        if(web == null)
+        {
+            this.processor = null;
+            this.visionPortal = null;
+            return;
+        }
+
         this.processor = new AprilTagProcessor.Builder()
                 .setDrawAxes(FTCDebug.IS_DEBUG_MODE)
                 .setDrawCubeProjection(FTCDebug.IS_DEBUG_MODE)

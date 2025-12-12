@@ -22,7 +22,7 @@ public class DriveTrainTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         hub = new ControlHub(hardwareMap, null, telemetry);
 
-        double conveyorPower = 0;
+        //double conveyorPower = 0;
 
         waitForStart();
 
@@ -30,7 +30,7 @@ public class DriveTrainTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             wheelMovement();
-
+            /*
             if(gamepad1.left_trigger>=0.1){
                 conveyorPower = gamepad1.left_trigger/5;
             }
@@ -41,9 +41,11 @@ public class DriveTrainTest extends LinearOpMode {
                 conveyorPower = 0;
             }
 
+             */
 
 
-            hub.conveyorMotor.setPower(conveyorPower);
+
+            //hub.conveyorMotor.setPower(conveyorPower);
 
             dash.sendTelemetryPacket(new TelemetryPacket());
             updateTelemetry(telemetry);

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.hardware.camera2.CameraDevice;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
@@ -45,11 +46,19 @@ public class ControlHub
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
          */
-
         vision = new Vision(map.get(WebcamName.class, "Webcam 1"));
         detector = new AprilTagDetector(vision);
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
         telemetry = tel;
+
+        // usb hub is facing backwards.
+        map.get(IMU.class, "imu").initialize(new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                )
+        ));
+
         //conveyorMotor = map.get(DcMotor.class, "conveyorMotor");
         //This is the code setup for the future motors and servos on the robot
         /*
