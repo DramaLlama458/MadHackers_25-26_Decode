@@ -95,7 +95,7 @@ public class GPad
         }
 
         double gearMultiplier = .25;
-        double wheelPowerMultiplier = 0.45 * (1 + (gear - 1) * gearMultiplier);
+        double wheelPowerMultiplier = 0.40 * (1 + (gear - 1) * gearMultiplier);
 
         lf *= wheelPowerMultiplier;
         lb *= wheelPowerMultiplier;
@@ -382,11 +382,11 @@ public class GPad
         hub.drive.rightBack.setPower(this.rightBackPower);
 
         hub.telemetry.addData("Team", this.aprilTagDetector.GetTeam());
-        hub.telemetry.addData("Camera State", this.vision.GetPortal().getCameraState());
+        hub.telemetry.addData("Camera State", this.vision.GetPortal() != null ?  this.vision.GetPortal().getCameraState() : "DEAD");
         hub.telemetry.addData("Movement Vector", String.format("(lf: %f, lb: %f, rf: %f, rb: %f)", this.leftFrontPower, this.leftBackPower, this.rightFrontPower, this.rightBackPower));
         hub.telemetry.addData("Heading", FTCDebug.GetRobotMovementDirection(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Heading Degree", FTCDebug.GetRobotMovementAngle(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
-        hub.telemetry.addData("Test", this.hub.vision.GetProcessor().getDetections());
+        hub.telemetry.addData("Detections", this.vision.GetPortal() != null ?  this.hub.vision.GetProcessor().getDetections() : "DEAD");
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;

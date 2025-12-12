@@ -55,6 +55,12 @@ public class AprilTagDetector
 
     public AprilTagDetector(Vision _v) {
         this.vision = _v;
+
+        // Camera not detected?
+        if(this.IsUnAvailable())
+        {   return;
+        }
+
         // start streaming if not streaming already.
         if(this.vision.GetPortal().getCameraState() != STREAMING)
         {
@@ -64,8 +70,16 @@ public class AprilTagDetector
         this.tagProcessor = this.vision.GetProcessor();
     }
 
+    public boolean IsUnAvailable()
+    {   return this.vision.GetProcessor() == null || this.vision.GetPortal() == null;
+    }
+
     public void Update()
     {
+        if(IsUnAvailable())
+        {   return;
+        }
+
         if(this.vision.GetPortal().getCameraState() != STREAMING)
         {
             this.vision.GetPortal().resumeStreaming();
@@ -213,6 +227,10 @@ public class AprilTagDetector
 
     public void SwitchTeam()
     {
+        if(this.teamColor == null)
+        {   return;
+        }
+
         switch(this.teamColor)
         {
             case Red:

@@ -16,7 +16,7 @@ public class Vision
 
     public Vision(CameraName web)
     {
-        if(web == null)
+        if(web == null || web != null)
         {
             this.processor = null;
             this.visionPortal = null;

@@ -46,11 +46,22 @@ public class ControlHub
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
          */
-        vision = new Vision(map.get(WebcamName.class, "Webcam 1"));
+        WebcamName webName;
+
+        try
+        {
+            webName = map.get(WebcamName.class, "Webcam 1");
+        }
+        catch(Exception e)
+        {   webName = null;
+        }
+
+        vision = new Vision(webName);
         detector = new AprilTagDetector(vision);
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
         telemetry = tel;
 
+        telemetry.addData("1", webName);
         // usb hub is facing backwards.
         map.get(IMU.class, "imu").initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
