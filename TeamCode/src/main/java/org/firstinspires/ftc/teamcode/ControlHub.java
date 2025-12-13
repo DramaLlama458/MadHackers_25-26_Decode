@@ -4,6 +4,7 @@ import android.hardware.camera2.CameraDevice;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
@@ -27,12 +28,13 @@ public class ControlHub
     public AprilTagDetector detector;
     /*
     public DcMotor outputMotor;
-    public CRServo inputServo;
     public double conveyorSpeed = 0;
 
-    public boolean inputOn = false;
+
     */
 
+    public CRServo inputServo;
+    public boolean inputOn = false;
 
     public ControlHub(HardwareMap map, Pose2d initialPose, Telemetry tel)
     {
@@ -46,7 +48,11 @@ public class ControlHub
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
          */
+        inputServo = map.get(CRServo.class,"inputServo");
+
+
         WebcamName webName;
+
 
         try
         {

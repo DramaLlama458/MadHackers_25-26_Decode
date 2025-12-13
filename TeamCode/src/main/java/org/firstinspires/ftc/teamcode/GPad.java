@@ -32,6 +32,8 @@ public class GPad
     DriveMode driveMode = DriveMode.RobotCentric;
 
     boolean buttonYWasPressed = false;
+    boolean debugModeOn = false;
+    boolean dpadDownWasPressed = false;
 
     enum
     DriveMode
@@ -48,6 +50,9 @@ public class GPad
         vision = hb.vision;
 
         aprilTagDetector = hub.detector;
+
+        // make sure keeps field orientation.
+        hub.drive.lazyImu.get().resetYaw();
     }
 
     public double scaleInput(double input)
@@ -95,7 +100,7 @@ public class GPad
         }
 
         double gearMultiplier = .25;
-        double wheelPowerMultiplier = 0.40 * (1 + (gear - 1) * gearMultiplier);
+        double wheelPowerMultiplier = .70; //0.40 * (1 + (gear - 1) * gearMultiplier);
 
         lf *= wheelPowerMultiplier;
         lb *= wheelPowerMultiplier;
@@ -289,6 +294,7 @@ public class GPad
 
     public void ButtonLeftTrigger(float pressAmount)
     {
+        /*
         final float DEADZONE_THRESHOLD = 0.075f;
         double conveyorPower = 0f;
         float multiplier = .25f;
@@ -296,18 +302,30 @@ public class GPad
         if(pressAmount >= DEADZONE_THRESHOLD)
         {   conveyorPower = pressAmount;
         }
-        
+
+         */
+        if(pressAmount>.5){
+            hub.inputServo.setPower(scaleInput(1));
+        }else{
+            hub.inputServo.setPower(0);
+        }
         //hub.conveyorMotor.setPower(conveyorPower * multiplier);
     }
 
     public void ButtonRightTrigger(float pressAmount)
     {
+        /*
         final float DEADZONE_THRESHOLD = 0.075f;
         double conveyorPower = 0f;
         float multiplier = .6f;
 
         if(pressAmount >= DEADZONE_THRESHOLD)
         {   conveyorPower = pressAmount;
+        }
+
+         */
+        if(pressAmount>.5){
+            hub.inputServo.setPower(scaleInput(-1));
         }
 
         //hub.conveyorMotor.setPower(-conveyorPower * multiplier);
@@ -335,6 +353,17 @@ public class GPad
 
     public void DpadDown(boolean pressed)
     {
+        if(this.dpadDownWasPressed && pressed)
+        {   return;
+        }
+
+        this.dpadDownWasPressed = pressed;
+
+        if(!pressed)
+        {   return;
+        }
+
+        this.debugModeOn = !this.debugModeOn;
     }
 
     public void DpadLeft(boolean pressed)
@@ -376,10 +405,13 @@ public class GPad
         }
 
         // Apply motor timings
-        hub.drive.leftFront.setPower(this.leftFrontPower);
-        hub.drive.leftBack.setPower(this.leftBackPower);
-        hub.drive.rightFront.setPower(this.rightFrontPower);
-        hub.drive.rightBack.setPower(this.rightBackPower);
+        if(!this.debugModeOn)
+        {
+            hub.drive.leftFront.setPower(this.leftFrontPower);
+            hub.drive.leftBack.setPower(this.leftBackPower);
+            hub.drive.rightFront.setPower(this.rightFrontPower);
+            hub.drive.rightBack.setPower(this.rightBackPower);
+        }
 
         hub.telemetry.addData("Team", this.aprilTagDetector.GetTeam());
         hub.telemetry.addData("Camera State", this.vision.GetPortal() != null ?  this.vision.GetPortal().getCameraState() : "DEAD");
@@ -387,6 +419,8 @@ public class GPad
         hub.telemetry.addData("Heading", FTCDebug.GetRobotMovementDirection(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Heading Degree", FTCDebug.GetRobotMovementAngle(this.leftFrontPower, this.rightFrontPower, this.leftBackPower, this.rightBackPower));
         hub.telemetry.addData("Detections", this.vision.GetPortal() != null ?  this.hub.vision.GetProcessor().getDetections() : "DEAD");
+        hub.telemetry.addData("Mode", this.driveMode);
+        hub.telemetry.addData("DebugMode", this.debugModeOn);
 
         this.leftFrontPower = 0;
         this.leftBackPower = 0;
