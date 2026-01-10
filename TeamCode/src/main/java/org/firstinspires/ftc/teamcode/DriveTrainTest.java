@@ -61,6 +61,14 @@ public class DriveTrainTest extends LinearOpMode {
                 hub.inputServo.setPower(0);
             }
 
+            if(gamepad1.a){
+                hub.bottomOutputMotor.setPower(.3);
+                hub.topOutputMotor.setPower(.3);
+            }else if(gamepad1.b){
+                hub.bottomOutputMotor.setPower(-.3);
+                hub.topOutputMotor.setPower(-.3);
+            }
+
 
             /*
             if(gamepad1.right_bumper){
