@@ -30,28 +30,21 @@ public class DriveTrainTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             wheelMovement();
-            /*
-            if(gamepad1.left_trigger>=0.1){
-                conveyorPower = gamepad1.left_trigger/5;
-            }
-            if(gamepad1.right_trigger>=0.1){
-                conveyorPower = -gamepad1.right_trigger/5;
-            }
-            if(gamepad1.left_trigger<0.1 && gamepad1.right_trigger<0.1){
-                conveyorPower = 0;
-            }
-
-             */
 
 
-
-            //hub.conveyorMotor.setPower(conveyorPower);
 
             dash.sendTelemetryPacket(new TelemetryPacket());
             updateTelemetry(telemetry);
 
 
 
+            if(gamepad1.x){
+                hub.conveyorMotor.setPower(.4);
+            }else if(gamepad1.y){
+                hub.conveyorMotor.setPower(-.4);
+            }else{
+                hub.conveyorMotor.setPower(0);
+            }
 
             if(gamepad1.left_trigger>.5){
                 hub.inputServo.setPower(1);
@@ -63,10 +56,13 @@ public class DriveTrainTest extends LinearOpMode {
 
             if(gamepad1.a){
                 hub.bottomOutputMotor.setPower(.3);
-                hub.topOutputMotor.setPower(.3);
+                hub.topOutputMotor.setPower(1);
             }else if(gamepad1.b){
-                hub.bottomOutputMotor.setPower(-.3);
-                hub.topOutputMotor.setPower(-.3);
+                hub.bottomOutputMotor.setPower(-.2);
+                hub.topOutputMotor.setPower(-.5);
+            }else{
+                hub.bottomOutputMotor.setPower(0);
+                hub.topOutputMotor.setPower(0);
             }
 
 

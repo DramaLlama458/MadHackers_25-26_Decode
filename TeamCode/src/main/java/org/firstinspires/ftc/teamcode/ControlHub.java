@@ -29,7 +29,7 @@ public class ControlHub
 
     public DcMotor bottomOutputMotor;
     public DcMotor topOutputMotor;
-    public double conveyorSpeed = 0;
+    public DcMotor conveyorMotor;
 
 
 
@@ -50,6 +50,10 @@ public class ControlHub
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
          */
         inputServo = map.get(CRServo.class,"inputServo");
+
+        conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
+        conveyorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         bottomOutputMotor = map.get(DcMotor.class,"bottomOutputMotor");
         topOutputMotor = map.get(DcMotor.class,"topOutputMotor");
 

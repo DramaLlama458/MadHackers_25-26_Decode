@@ -115,20 +115,30 @@ public class GPad
 
     public void ButtonX(boolean pressed)
     {
+        if(pressed){
+            hub.conveyorMotor.setPower(.4);
+        }else{
+            hub.conveyorMotor.setPower(0);
+        }
     }
 
     public void ButtonA(boolean pressed)
     {
 
-        /*
-
-        hub.conveyorMotor.setPower(.25);
-
-         */
+        if(pressed){
+            hub.bottomOutputMotor.setPower(.3);
+            hub.topOutputMotor.setPower(1);
+        }else{
+            hub.bottomOutputMotor.setPower(0);
+            hub.topOutputMotor.setPower(0);
+        }
     }
 
     public void ButtonB(boolean pressed)
     {
+        if(pressed){
+            hub.conveyorMotor.setPower(-.4);
+        }
     }
 
     public static double normalizeRadians(double angle) {
