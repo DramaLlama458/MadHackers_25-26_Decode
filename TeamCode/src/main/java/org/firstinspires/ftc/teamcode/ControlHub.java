@@ -26,12 +26,13 @@ public class ControlHub
     public Telemetry telemetry;
     public Vision vision;
     public AprilTagDetector detector;
-    /*
-    public DcMotor outputMotor;
+
+    public DcMotor bottomOutputMotor;
+    public DcMotor topOutputMotor;
     public double conveyorSpeed = 0;
 
 
-    */
+
 
     public CRServo inputServo;
     public boolean inputOn = false;
@@ -49,6 +50,8 @@ public class ControlHub
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
          */
         inputServo = map.get(CRServo.class,"inputServo");
+        bottomOutputMotor = map.get(DcMotor.class,"bottomOutputMotor");
+        topOutputMotor = map.get(DcMotor.class,"topOutputMotor");
 
 
         WebcamName webName;
