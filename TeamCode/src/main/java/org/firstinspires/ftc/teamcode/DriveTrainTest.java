@@ -107,10 +107,10 @@ public class DriveTrainTest extends LinearOpMode {
         double rightFrontPower = (y - x - rx) / denominator;
         double rightBackPower = (y + x - rx) / denominator;
 
-        hub.drive.leftFront.setPower(leftFrontPower*.70);
-        hub.drive.rightFront.setPower(rightFrontPower*.70);
-        hub.drive.leftBack.setPower(leftBackPower*.70);
-        hub.drive.rightBack.setPower(rightBackPower*.70);
+        hub.drive.leftFront.setPower(leftFrontPower*.90);
+        hub.drive.rightFront.setPower(rightFrontPower*.90);
+        hub.drive.leftBack.setPower(leftBackPower*.90);
+        hub.drive.rightBack.setPower(rightBackPower*.90);
 
         telemetry.addData("X",x);
         telemetry.addData("Y",y);
