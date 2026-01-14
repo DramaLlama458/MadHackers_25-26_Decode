@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -27,8 +28,8 @@ public class ControlHub
     public Vision vision;
     public AprilTagDetector detector;
 
-    public DcMotor bottomOutputMotor;
-    public DcMotor topOutputMotor;
+    public DcMotorEx bottomOutputMotor;
+    public DcMotorEx topOutputMotor;
     public DcMotor conveyorMotor;
 
 
@@ -54,12 +55,11 @@ public class ControlHub
         conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
         conveyorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        bottomOutputMotor = map.get(DcMotor.class,"bottomOutputMotor");
-        topOutputMotor = map.get(DcMotor.class,"topOutputMotor");
+        bottomOutputMotor = map.get(DcMotorEx.class,"bottomOutputMotor");
+        topOutputMotor = map.get(DcMotorEx.class,"topOutputMotor");
 
 
         WebcamName webName;
-
 
         try
         {
@@ -74,7 +74,13 @@ public class ControlHub
         drive = new MecanumDrive(map, initialPose); //This is for autonomous and not teleop
         telemetry = tel;
 
-        telemetry.addData("1", webName);
+        try {
+            telemetry.addData("1", vision.GetPortal());
+            telemetry.addData("1", vision.GetPortal().getCameraState());
+        }
+        catch(Exception e)
+        {
+        }
         // usb hub is facing backwards.
         map.get(IMU.class, "imu").initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(

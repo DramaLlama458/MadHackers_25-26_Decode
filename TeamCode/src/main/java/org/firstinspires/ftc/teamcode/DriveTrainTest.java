@@ -39,7 +39,7 @@ public class DriveTrainTest extends LinearOpMode {
 
 
             if(gamepad1.x){
-                hub.conveyorMotor.setPower(.4);
+                hub.conveyorMotor.setPower(.7);
             }else if(gamepad1.y){
                 hub.conveyorMotor.setPower(-.4);
             }else{
@@ -54,16 +54,31 @@ public class DriveTrainTest extends LinearOpMode {
                 hub.inputServo.setPower(0);
             }
 
+            // 28 tics per rotation
+            int speed = 120;
             if(gamepad1.a){
-                hub.bottomOutputMotor.setPower(.3);
-                hub.topOutputMotor.setPower(1);
+                hub.bottomOutputMotor.setVelocity(speed*18);
+                hub.topOutputMotor.setVelocity(speed*18);
             }else if(gamepad1.b){
-                hub.bottomOutputMotor.setPower(-.2);
+                hub.bottomOutputMotor.setPower(-.5);
                 hub.topOutputMotor.setPower(-.5);
             }else{
                 hub.bottomOutputMotor.setPower(0);
                 hub.topOutputMotor.setPower(0);
             }
+
+            if(gamepad1.dpad_up){
+                speed+=10;
+            }
+            if(gamepad1.dpad_down){
+                speed-=10;
+            }
+
+            telemetry.addData("Top",hub.topOutputMotor.getVelocity());
+            telemetry.addData("Bottom",hub.bottomOutputMotor.getVelocity());
+            telemetry.addData("Speed",speed);
+            updateTelemetry(telemetry);
+
 
 
             /*
@@ -112,9 +127,6 @@ public class DriveTrainTest extends LinearOpMode {
         hub.drive.leftBack.setPower(leftBackPower*.90);
         hub.drive.rightBack.setPower(rightBackPower*.90);
 
-        telemetry.addData("X",x);
-        telemetry.addData("Y",y);
-        telemetry.addData("RX",rx);
-        updateTelemetry(telemetry);
+
     }
 }

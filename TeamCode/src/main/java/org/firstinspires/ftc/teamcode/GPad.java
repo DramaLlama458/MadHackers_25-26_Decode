@@ -116,7 +116,7 @@ public class GPad
     public void ButtonX(boolean pressed)
     {
         if(pressed){
-            hub.conveyorMotor.setPower(.4);
+            hub.conveyorMotor.setPower(.7);
         }else{
             hub.conveyorMotor.setPower(0);
         }
