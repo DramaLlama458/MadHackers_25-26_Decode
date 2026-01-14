@@ -41,10 +41,12 @@ public class AutoLeave  extends LinearOpMode {
                 continue;
             }
             resetRuntime();
-            while(hub.topOutputMotor.getVelocity()>2100&&hub.bottomOutputMotor.getVelocity()>2100){
+            while(getRuntime()<5){
                 hub.conveyorMotor.setPower(.7);
+                telemetry.addData("Runtime",getRuntime());
+                telemetry.update();
             }
-
+            resetRuntime();
             if(getRuntime()<1) {
                 hub.drive.leftFront.setPower(0.4);
                 hub.drive.rightFront.setPower(0.4);
