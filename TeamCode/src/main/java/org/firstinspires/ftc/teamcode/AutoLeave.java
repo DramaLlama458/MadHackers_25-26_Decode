@@ -48,10 +48,10 @@ public class AutoLeave  extends LinearOpMode {
             }
             resetRuntime();
             if(getRuntime()<1) {
-                hub.drive.leftFront.setPower(0.4);
+                hub.drive.leftFront.setPower(-0.4);
                 hub.drive.rightFront.setPower(0.4);
                 hub.drive.leftBack.setPower(0.4);
-                hub.drive.rightBack.setPower(0.4);
+                hub.drive.rightBack.setPower(-0.4);
             }
 
             if(getRuntime()>1) {

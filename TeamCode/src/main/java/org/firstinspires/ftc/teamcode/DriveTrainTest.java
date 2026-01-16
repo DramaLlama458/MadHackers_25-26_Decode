@@ -23,6 +23,9 @@ public class DriveTrainTest extends LinearOpMode {
         hub = new ControlHub(hardwareMap, null, telemetry);
 
         //double conveyorPower = 0;
+        double speed = 120;
+        //double bottomMult =1;
+        //double topMult =1;
 
         waitForStart();
 
@@ -55,7 +58,7 @@ public class DriveTrainTest extends LinearOpMode {
             }
 
             // 28 tics per rotation
-            int speed = 120;
+
             if(gamepad1.a){
                 hub.bottomOutputMotor.setVelocity(speed*18);
                 hub.topOutputMotor.setVelocity(speed*18);
@@ -67,16 +70,58 @@ public class DriveTrainTest extends LinearOpMode {
                 hub.topOutputMotor.setPower(0);
             }
 
+
+
+            double speedaddr = .05;
+
             if(gamepad1.dpad_up){
-                speed+=10;
+                speed += speedaddr;
             }
             if(gamepad1.dpad_down){
-                speed-=10;
+                speed -= speedaddr;
             }
 
+            /*
+
+            double multipleraddr=.003;
+
+            if(gamepad1.a){
+                bottomMult+=multipleraddr;
+            }
+            if(gamepad1.b){
+                bottomMult-=multipleraddr;
+
+            }
+            if(gamepad1.x){
+                topMult+=multipleraddr;
+
+            }
+            if(gamepad1.y){
+
+                topMult-=multipleraddr;
+
+            }
+
+
+            if(gamepad1.right_bumper){
+                hub.bottomOutputMotor.setVelocity(speed*18*bottomMult);
+                hub.topOutputMotor.setVelocity(speed*18*topMult);
+            }
+            if(gamepad1.left_bumper){
+                hub.bottomOutputMotor.setPower(0);
+                hub.topOutputMotor.setPower(0);
+            }
+            if(gamepad1.left_trigger>0.5){
+                hub.conveyorMotor.setPower(.5);
+            }else{
+                hub.conveyorMotor.setPower(0);
+            }
+            */
             telemetry.addData("Top",hub.topOutputMotor.getVelocity());
             telemetry.addData("Bottom",hub.bottomOutputMotor.getVelocity());
             telemetry.addData("Speed",speed);
+            //telemetry.addData("TopMult",topMult);
+            //telemetry.addData("BottomMult",bottomMult);
             updateTelemetry(telemetry);
 
 
