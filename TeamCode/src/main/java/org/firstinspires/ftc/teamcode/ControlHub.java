@@ -30,13 +30,9 @@ public class ControlHub
 
     public DcMotorEx bottomOutputMotor;
     public DcMotorEx topOutputMotor;
-    public DcMotor conveyorMotor;
-
-
-
+    public CRServo conveyorServo;
 
     public CRServo inputServo;
-    public boolean inputOn = false;
 
     public ControlHub(HardwareMap map, Pose2d initialPose, Telemetry tel)
     {
@@ -46,15 +42,11 @@ public class ControlHub
         }
         // Initial pose is just so hub can be used for autonomous
 
-        /*
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-         */
         inputServo = map.get(CRServo.class,"inputServo");
+        inputServo.setDirection(CRServo.Direction.REVERSE);
 
-        conveyorMotor = map.get(DcMotor.class,"conveyorMotor");
-        conveyorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        conveyorServo = map.get(CRServo.class,"conveyorServo");
+        conveyorServo.setDirection(CRServo.Direction.REVERSE);
         bottomOutputMotor = map.get(DcMotorEx.class,"bottomOutputMotor");
         topOutputMotor = map.get(DcMotorEx.class,"topOutputMotor");
 

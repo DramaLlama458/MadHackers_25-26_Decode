@@ -100,8 +100,12 @@ public class GPad
         }
 
         double gearMultiplier = .25;
-        double wheelPowerMultiplier = .70; //0.40 * (1 + (gear - 1) * gearMultiplier);
+        //0.40 * (1 + (gear - 1) * gearMultiplier);
 
+
+
+
+        double wheelPowerMultiplier = .70;
         lf *= wheelPowerMultiplier;
         lb *= wheelPowerMultiplier;
         rf *= wheelPowerMultiplier;
@@ -116,9 +120,9 @@ public class GPad
     public void ButtonX(boolean pressed)
     {
         if(pressed){
-            hub.conveyorMotor.setPower(.7);
+            hub.conveyorServo.setPower(1);
         }else{
-            hub.conveyorMotor.setPower(0);
+            hub.conveyorServo.setPower(0);
         }
     }
 
@@ -126,8 +130,8 @@ public class GPad
     {
 
         if(pressed){
-            hub.bottomOutputMotor.setPower(.3);
-            hub.topOutputMotor.setPower(1);
+            hub.bottomOutputMotor.setPower(80*28);
+            hub.topOutputMotor.setPower(80*28);
         }else{
             hub.bottomOutputMotor.setPower(0);
             hub.topOutputMotor.setPower(0);
@@ -137,7 +141,7 @@ public class GPad
     public void ButtonB(boolean pressed)
     {
         if(pressed){
-            hub.conveyorMotor.setPower(-.4);
+            hub.conveyorServo.setPower(-1);
         }
     }
 
