@@ -33,7 +33,7 @@ public class DriveTrainTest extends LinearOpMode {
         //double bottomMult =1;
         //double topMult =1;
 
-        //hub.drive.lazyImu.get().resetYaw();
+        hub.drive.lazyImu.get().resetYaw();
 
         waitForStart();
 
